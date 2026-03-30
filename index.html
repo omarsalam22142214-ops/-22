@@ -1,1694 +1,329 @@
 <html lang="ar" dir="rtl"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer">
-    <title style="direction: rtl; text-align: start;"> MY TV </title>
-    
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4caac9">
-    <link rel="apple-touch-icon" href="icon-192.png">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;display=swap" rel="stylesheet">
-
+    <title>أركيد الألعاب الاحترافي 🎮</title>
     <style>
-        body { margin: 0; background-color: #1a1a1a; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; transition: 0.3s; color: #fff; }
+        :root { --p: #2c3e50; --a: #e67e22; --bg: #ecf0f1; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; text-align: center; user-select: none; }
         
-        /* ستايل اللوجو الجديد */
-        .netflix-logo {
-            font-family: 'Bebas Neue', sans-serif;
-            color: #E50914;
-            font-size: 65px;
-            margin: 25px auto 10px auto;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            text-shadow: 0 4px 12px rgba(229, 9, 20, 0.4);
-            transform: scaleY(1.15);
-            display: inline-block;
-            cursor: default;
-        }
+        nav { background: var(--p); padding: 10px; display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; position: sticky; top: 0; z-index: 1000; }
+        nav button { background: #34495e; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 14px; transition: 0.2s; }
+        nav button:hover, nav button.active { background: var(--a); }
 
-        .control-group { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; padding: 0 10px; }
-        
-        .cat-btn { background-color: #222; color: #fff; border: 1px solid #4caac9; padding: 10px 15px; border-radius: 25px; cursor: pointer; font-weight: bold; transition: all 0.3s; font-size: 14px; white-space: nowrap; }
-        .cat-btn:hover, .active-cat { background-color: #4caac9; color: #000; }
-        .match-btn { border-color: #ff4757 !important; color: #ff4757; position: relative; } 
-        .match-btn:hover { background-color: #ff4757 !important; color: #fff !important; }
-        .tool-btn { border-color: #f39c12 !important; color: #f39c12; }
-        .tool-btn:hover { background-color: #f39c12 !important; color: #000 !important; }
+        .section { display: none; padding: 20px; animation: f 0.3s; }
+        .active { display: block; }
+        @keyframes f { from { opacity: 0; } to { opacity: 1; } }
 
-        .search-sort-container { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin: 0 auto 20px auto; width: 90%; max-width: 600px; align-items: center; }
-        #searchInput { flex: 1; min-width: 150px; padding: 12px; border-radius: 25px; border: 2px solid #4caac9; background: #222; color: white; text-align: center; font-size: 16px; outline: none; }
-        #sortSelect { padding: 12px; border-radius: 25px; border: 2px solid #4caac9; background: #222; color: white; text-align: center; font-size: 16px; outline: none; cursor: pointer; }
-        #viewToggleBtn { padding: 12px 20px; border-radius: 25px; border: 2px solid #4caac9; background: #222; color: white; outline: none; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
-        #viewToggleBtn:hover { background: #4caac9; color: #000; }
+        .box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: inline-block; max-width: 95%; margin-bottom: 20px; }
+        button.main-btn { background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px; font-weight: bold; }
 
-        #adhkar-ticker { background: linear-gradient(90deg, #111, #222, #111); color: #ffeb3b; padding: 12px; margin: 15px auto; width: 90%; max-width: 600px; border-radius: 8px; border: 1px solid #4caac9; font-size: 18px; font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
-        #adhkar-text { display: inline-block; transition: opacity 0.5s ease-in-out; opacity: 1; }
+        /* شطرنج متطور */
+        .chess-grid { display: grid; grid-template-columns: repeat(8, 45px); grid-template-rows: repeat(8, 45px); border: 5px solid #333; margin: 10px auto; justify-content: center; }
+        .sq { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; }
+        .w-sq { background: #eeeed2; } .b-sq { background: #769656; }
+        .sel { background: #f1c40f !important; } 
+        .hint { background: #d4ac0d !important; border: 2px solid #fff; box-sizing: border-box; } 
+        #chess-status { font-weight: bold; font-size: 18px; margin-top: 10px; color: var(--p); }
 
-        #media-wrapper { 
-            position: relative; 
-            max-width: 1000px; 
-            margin: 60px auto 20px; 
-            background: transparent; 
-            display: none; 
-            flex-direction: column; 
-            align-items: center;
-            box-shadow: none; 
-            border: none;
-        }
+        /* باقي الألعاب */
+        #bbtan { background: #222; display: block; margin: 10px auto; border-radius: 10px; cursor: crosshair; touch-action: none; }
+        #s-canv { background: #000; display: block; margin: 10px auto; border: 3px solid #333; }
+        .xo-g { display: grid; grid-template-columns: repeat(3, 80px); gap: 5px; justify-content: center; margin: 10px; }
+        .xo-c { width: 80px; height: 80px; background: #bdc3c7; display: flex; align-items: center; justify-content: center; font-size: 40px; cursor: pointer; border-radius: 10px; }
 
-        .player-controls { 
-            position: relative; 
-            top: 0; 
-            width: 100%; 
-            display: flex; 
-            gap: 8px; 
-            flex-wrap: wrap; 
-            justify-content: center; 
-            margin-bottom: 12px; 
-            z-index: 9999; 
-        }
-
-        #my-player, #iframe-player { 
-            position: relative; 
-            width: 100%; 
-            height: auto;
-            aspect-ratio: 16 / 9; 
-            background: #000; 
-            border-radius: 10px; 
-            border: 2px solid #4caac9; 
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
-        }
-        
-        .hidden { display: none !important; }
-
-        #quality-badge, #stream-status, #quality-selector {
-            position: absolute;
-            z-index: 9999;
-            top: 60px; 
-        }
-        #quality-badge { left: 15px; background: rgba(0, 0, 0, 0.7); color: rgb(0, 255, 204); border: 1px solid rgb(0, 255, 204); padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 14px; }
-        #stream-status { left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.8); padding: 6px 15px; border-radius: 20px; font-weight: bold; font-size: 15px; }
-        
-        #quality-selector {
-            left: 15px;
-            background: rgba(0, 0, 0, 0.7);
-            color: rgb(0, 255, 204);
-            border: 1px solid rgb(0, 255, 204);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 14px;
-            outline: none;
-            cursor: pointer;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-        }
-        #quality-selector option { background: #222; color: #fff; }
-
-        body.theater-active { overflow: hidden; }
-        .theater-mode { 
-            position: fixed !important; top: 0 !important; left: 0 !important; 
-            width: 100vw !important; height: 100vh !important; 
-            max-width: none !important; margin: 0 !important; 
-            z-index: 99999 !important; background: #000 !important; 
-        }
-        .theater-mode .player-controls { 
-            position: absolute !important; 
-            top: 15px !important; right: 15px !important; 
-            width: auto !important; 
-        }
-        .theater-mode #my-player, .theater-mode #iframe-player {
-            height: 100vh !important; border-radius: 0 !important; border: none !important;
-        }
-
-        .pinned-player { position: fixed !important; bottom: 20px !important; right: 20px !important; left: auto !important; top: auto !important; width: 350px !important; height: auto !important; z-index: 999999 !important; margin: 0 !important; }
-        @media (max-width: 480px) { .pinned-player { width: 250px !important; } }
-        .pinned-player .player-controls { display: none !important; } 
-
-        /* ======================================================== */
-        /* التصميم الاحترافي الجديد لحاوية القنوات والأيقونات فقط */
-        /* ======================================================== */
-        #main-list {
-            display: grid !important;
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important;
-            gap: 15px !important;
-            padding: 20px !important;
-            background: #121212 !important; 
-            border-radius: 15px !important;
-            box-sizing: border-box !important;
-            margin: 20px auto;
-            max-width: 1200px;
-        }
-
-        #main-list .tv-box, #main-list .match-btn {
-            position: relative !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            justify-content: flex-end !important; 
-            width: 100% !important;
-            height: 110px !important; 
-            margin: 0 !important;
-            padding: 10px !important;
-            background-color: #1e1e24 !important;
-            border: 1px solid rgba(255, 255, 255, 0.05) !important;
-            border-radius: 16px !important; 
-            color: #ffffff !important;
-            font-family: 'Segoe UI', Tahoma, sans-serif !important;
-            font-size: 13px !important;
-            font-weight: 600 !important;
-            text-align: center !important;
-            text-decoration: none !important;
-            cursor: pointer !important;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important; 
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-            overflow: hidden !important;
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.9) !important; 
-            background-size: 55% !important; 
-            background-repeat: no-repeat !important;
-            background-position: center 25% !important; 
-        }
-
-        #main-list .tv-box:hover, #main-list .match-btn:hover {
-            transform: translateY(-6px) scale(1.03) !important; 
-            box-shadow: 0 12px 20px rgba(0, 210, 211, 0.3) !important; 
-            border-color: rgba(0, 210, 211, 0.5) !important;
-            background-color: #2a2d34 !important;
-            z-index: 10 !important;
-        }
-
-        #main-list .active-channel { 
-            border-color: #ff0000 !important; 
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7) !important; 
-        }
-        
-        #main-list .fav-icon-star {
-            position: absolute !important;
-            top: 8px !important;
-            right: 8px !important;
-            font-size: 18px !important;
-            line-height: 1 !important;
-            color: rgba(255, 255, 255, 0.2) !important; 
-            transition: color 0.3s ease, transform 0.3s ease !important;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
-            z-index: 2 !important;
-            background: transparent !important;
-            border: none !important;
-            width: auto !important;
-            height: auto !important;
-        }
-
-        #main-list .is-fav .fav-icon-star, #main-list .fav-icon-star:hover {
-            color: #ffc107 !important; 
-            text-shadow: 0 0 10px rgba(255, 193, 7, 0.6) !important; 
-            transform: scale(1.2) !important;
-        }
-
-        /* تنسيق العرض كقائمة (List View) */
-        .tv-container.list-view {
-            display: flex !important;
-            flex-direction: column;
-            padding: 10px;
-            background-color: transparent !important;
-        }
-        .tv-container.list-view .tv-box, 
-        .tv-container.list-view .match-btn {
-            width: 100% !important;
-            height: auto !important;
-            min-height: 60px;
-            border-radius: 10px !important;
-            display: flex !important;
-            flex-direction: row-reverse !important;
-            justify-content: flex-end !important;
-            align-items: center !important;
-            padding: 10px 20px !important;
-            box-sizing: border-box;
-            margin-bottom: 8px !important;
-            font-size: 16px !important;
-            background-position: left 15px center !important;
-            background-size: 40px !important;
-        }
-        body.light-theme .tv-container.list-view .tv-box, body.light-theme .tv-container.list-view .match-btn { background-color: #fff !important; color: #111 !important; }
-        .tv-container.list-view .fav-icon-star {
-            top: 50% !important;
-            transform: translateY(-50%) !important;
-            right: 15px !important;
-            left: auto !important;
-        }
-
-        .theme-toggle-btn { background: rgba(255,255,255,0.08); color: #fff; border: 2px solid #4caac9; border-radius: 12px; padding: 10px 16px; cursor: pointer; font-weight: bold; transition: 0.3s ease; }
-        body.light-theme { background: linear-gradient(180deg, #f6fbff 0%, #eaf4fb 100%); color: #111; }
-        body.light-theme h2, body.light-theme #live-clock { color: #111 !important; text-shadow: none !important; }
-        body.light-theme .cat-btn:not(#main-list .cat-btn), body.light-theme .theme-toggle-btn, body.light-theme #searchInput, body.light-theme #sortSelect, body.light-theme #viewToggleBtn { background: #fff !important; color: #111 !important; border-color: #4caac9 !important; }
-        body.light-theme .active-cat { background: #4caac9 !important; color: #000 !important; }
-        body.light-theme #main-list { background-color: rgba(255,255,255,0.7) !important; }
-
-        #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 9999999; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 16px; font-weight: bold; box-shadow: 0px 4px 10px rgba(0,0,0,0.5); border: 1px solid #4caac9; }
-        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100000; backdrop-filter: blur(5px); }
-        .modal-content { background: #222; padding: 20px; border-radius: 12px; width: 90%; max-width: 450px; border: 2px solid #4caac9; color: #fff; text-align: right; box-shadow: 0 10px 25px rgba(0,0,0,0.8); }
-        body.light-theme .modal-content { background: #fff; color: #111; }
-        .modal-content input { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #4caac9; background: #333; color: #fff; box-sizing: border-box; }
-        body.light-theme .modal-content input { background: #f9f9f9; color: #111; }
-        .modal-btn { padding: 10px; border-radius: 8px; cursor: pointer; border: none; font-weight: bold; transition: 0.3s; width: 48%; }
-        
-        footer { background-color: #333; padding: 20px; text-align: center; color: #fff; margin-top: 40px; border-top: 3px solid #4caac9; }
-        #scrollTopBtn { display: none; position: fixed; bottom: 20px; left: 20px; z-index: 9999; background: #4caac9; color: #000; border: none; width: 45px; height: 45px; border-radius: 50%; font-size: 24px; cursor: pointer; }
+        /* ستايل الحاسبة العلمية */
+        .sci-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: auto; max-width: 350px; direction: ltr; }
+        .sci-grid button { padding: 15px 5px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dfe6e9; color: #2d3436; transition: 0.2s; }
+        .sci-grid button:hover { opacity: 0.8; }
+        .sci-grid button.op { background: #0984e3; color: white; font-size: 20px; }
+        .sci-grid button.act { background: #d63031; color: white; }
+        .sci-grid button.sci { background: #b2bec3; }
+        .sci-grid button.eq { background: #00b894; color: white; grid-row: span 2; font-size: 20px; }
+        .sci-grid button.zero { grid-column: span 2; }
     </style>
-<style>:is([id*='google_ads_iframe'],[id*='taboola-'],.taboolaHeight,.taboola-placeholder,#top-ad,#credential_picker_container,#credentials-picker-container,#credential_picker_iframe,[id*='google-one-tap-iframe'],#google-one-tap-popup-container,.google-one-tap__module,.google-one-tap-modal-div,#amp_floatingAdDiv,#ez-content-blocker-container) {display:none!important;min-height:0!important;height:0!important;}</style><link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="use-credentials"><link rel="preconnect" href="https://fonts.gstatic.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mulish:wght@200;300;400;500;600;700;800;900&amp;display=swa"><style>:is([id*='google_ads_iframe'],[id*='taboola-'],.taboolaHeight,.taboola-placeholder,#top-ad,#credential_picker_container,#credentials-picker-container,#credential_picker_iframe,[id*='google-one-tap-iframe'],#google-one-tap-popup-container,.google-one-tap__module,.google-one-tap-modal-div,#amp_floatingAdDiv,#ez-content-blocker-container) {display:none!important;min-height:0!important;height:0!important;}</style><style>:is([id*='google_ads_iframe'],[id*='taboola-'],.taboolaHeight,.taboola-placeholder,#top-ad,#credential_picker_container,#credentials-picker-container,#credential_picker_iframe,[id*='google-one-tap-iframe'],#google-one-tap-popup-container,.google-one-tap__module,.google-one-tap-modal-div,#amp_floatingAdDiv,#ez-content-blocker-container) {display:none!important;min-height:0!important;height:0!important;}</style><style>:is([id*='google_ads_iframe'],[id*='taboola-'],.taboolaHeight,.taboola-placeholder,#top-ad,#credential_picker_container,#credentials-picker-container,#credential_picker_iframe,[id*='google-one-tap-iframe'],#google-one-tap-popup-container,.google-one-tap__module,.google-one-tap-modal-div,#amp_floatingAdDiv,#ez-content-blocker-container) {display:none!important;min-height:0!important;height:0!important;}</style></head>
-<body class="">
+</head>
+<body>
 
-    <div style="text-align: center; direction: ltr;">
-        <div class="netflix-logo">MY TV</div>
-    </div>
+<nav>
+    <button onclick="nav('h', this)" class="active">🏠</button>
+    <button onclick="nav('az', this)" class="">📿 أذكار</button>
+    <button onclick="nav('ch', this)" class="">♟️ شطرنج</button>
+    <button onclick="nav('bb', this)" class="">🔵 BBTAN</button>
+    <button onclick="nav('sn', this)" class="">🐍 ثعبان</button>
+    <button onclick="nav('xo', this)" class="">❌ XO</button>
+    <button onclick="nav('ca', this)" class="">🧮 حاسبة</button>
+    <button onclick="nav('cl', this)" class="">⚡ ضغط</button>
+    <button onclick="window.open('https://omarsalam22142214-ops.github.io/ASKME17')" class="cat-btn match-btn" style="display: inline-flex;"><font _mstmutation="1" style="direction: rtl;">  تحديات </font><div class="fav-icon-star" title="المفضلة">★</div></button><button onclick="nav('no', this)" class="">📝 مفكرة</button>
+</nav>
 
-    <div id="live-clock" style="color: rgb(76, 170, 201); font-size: 18px; font-weight: bold; margin-bottom: 15px; direction: rtl;">⏱ توقيت البث: 3:07:52 PM</div>
-
-    <div class="control-group">
-        <button onclick="filterChannels('all')" class="cat-btn active-cat" style="direction: rtl;">🌐 الكل</button>
-        <button onclick="filterChannels('sports')" class="cat-btn active-cat" style="direction: rtl;">⚽ رياضة</button>
-        <button onclick="filterChannels('movies')" class="cat-btn active-cat" style="direction: rtl;">🎬 أفلام ومسلسلات</button>
-        <button onclick="filterChannels('news')" class="cat-btn active-cat" style="direction: rtl;">🌍 أخبار</button>
-        <button onclick="playVideo(null, 'https://www.filgoal.com/matches/')" class="cat-btn match-btn" style="display: inline-flex;"><font _mstmutation="1" style="direction: rtl;">⚽️ مباريات اليوم</font><div class="fav-icon-star" title="المفضلة">★</div></button>
-        <button onclick="window.open('https://radioe.ct.ws/app/index.html#station')" class="cat-btn match-btn" style="display: inline-flex;"><font _mstmutation="1" style="direction: rtl;">📻 راديو و اذاعة</font><div class="fav-icon-star" title="المفضلة">★</div></button>
-        <button onclick="playVideo(null, 'https://timesprayer.com/')" class="cat-btn match-btn" style="display: inline-flex;"><font _mstmutation="1" style="direction: rtl;">🕌 مواقيت الصلاة</font><div class="fav-icon-star" title="المفضلة">★</div></button>
-        <button onclick="window.open('https://qiblafinder.withgoogle.com/intl/ar/desktop', '_blank')" class="cat-btn match-btn" style="display: inline-flex;"><font _mstmutation="1" style="direction: rtl;">🧭 القبلة</font><div class="fav-icon-star" title="المفضلة">★</div></button>
-        <button onclick="playVideo(null, 'https://www.i2arabic.com/newspapers/egyptian-newspapers')" class="cat-btn match-btn" style="display: inline-flex;"><font _mstmutation="1" style="direction: rtl;">  صحف واخبار </font><div class="fav-icon-star" title="المفضلة">★</div></button>
-        <button onclick="filterChannels('fav')" class="cat-btn active-cat" style="border-color: rgb(255, 235, 59); color: rgb(255, 235, 59); direction: rtl;">⭐ مفضلتي</button>
-    </div>
-
-    <div class="control-group">
-        <button onclick="openFetcherModal()" class="cat-btn tool-btn" style="border-color: rgb(46, 204, 113); color: rgb(46, 204, 113); direction: rtl;">🧲 جلب Iframes</button>
-        
-        <button id="editModeBtn" onclick="toggleEditMode()" class="cat-btn tool-btn" style="border-color: rgb(241, 196, 15); color: rgb(241, 196, 15); direction: rtl; background: transparent;">✏️ وضع التعديل</button>
-        
-        <button id="duplicateModeBtn" onclick="toggleDuplicateMode()" class="cat-btn tool-btn" style="border-color: rgb(155, 89, 182); color: rgb(155, 89, 182); direction: rtl; background: transparent;">📋 وضع النسخ</button>
-        
-        <button onclick="openMatchesModal()" class="cat-btn tool-btn" style="border-color: rgb(0, 210, 211); color: rgb(0, 210, 211); direction: rtl;">📅 جدول المباريات</button>
-        
-        <button onclick="openIptvModal()" class="cat-btn tool-btn" style="border-color: #9b59b6; color: #9b59b6; direction: rtl; background: transparent;">📡 سحب IPTV يدوي</button>
-        
-        <button onclick="openExternalModal()" class="cat-btn tool-btn" style="border-color: #ff9f43; color: #ff9f43; direction: rtl; background: transparent;">🔗 تشغيل رابط خارجي</button>
-
-        <button onclick="openTop50Modal()" class="cat-btn tool-btn" style="border-color: #ff9f43; color: #ff9f43; direction: rtl; background: transparent;">🌐 أشهر 50 موقع بث</button>
-
-        <button id="themeToggleBtn" type="button" class="theme-toggle-btn" onclick="toggleTheme()" style="direction: rtl;">🌙 الوضع الداكن</button>
-
-        
-    </div>
-
-    <div id="last-channel-container" style="margin-bottom: 15px;"><button class="cat-btn match-btn" style="background:#2ecc71; color:#fff;" onclick="playLast()">▶️ تشغيل آخر قناة وقفت عليها</button></div>
-
-    <div class="search-sort-container">
-        <input type="text" id="searchInput" onkeyup="searchChannels()" placeholder="🔍 ابحث عن قناة..." _mstplaceholder="13745225" style="direction: rtl;" data-ddg-inputtype="unknown">
-        <select id="sortSelect" onchange="sortChannels()" data-ddg-inputtype="unknown">
-            <option value="default" style="direction: rtl;">📌 الترتيب الافتراضي</option>
-            <option value="az" style="direction: rtl;">🔤 ترتيب أبجدي (أ - ي)</option>
-            <option value="za" style="direction: rtl;">🔤 ترتيب أبجدي (ي - أ)</option>
-        </select>
-        <button id="viewToggleBtn" onclick="toggleViewMode()" title="تغيير طريقة العرض" style="direction: rtl; background: rgb(34, 34, 34); color: rgb(255, 255, 255);">🔲 شبكة</button>
-  <button id="toggleListBtn2" type="button" class="theme-toggle-btn" onclick="toggleMainList()" style="direction: rtl; border-color: #e74c3c;">👁️ إظهار القنوات</button>
+<div id="h" class="section active">
+    <h1>أهلاً بيك يا بطل 🚀</h1>
+    <p></p>
 </div>
 
-    <div id="adhkar-ticker">
-        <span id="adhkar-text" style="opacity: 1; direction: rtl;">أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ وَأَتُوبُ إِلَيْهِ</span>
-    </div>
-
-    <div id="media-wrapper" style="display: none;" class="">
-        <div class="player-controls">
-            <button onclick="playPrevServerManual()" style="background: #2980b9; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;" title="السيرفر السابق">السابق ⏮️</button>
-            <button onclick="playNextServerManual()" style="background: #2980b9; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;" title="السيرفر التالي">⏭️التالي </button>
-            
-            <button id="cast-btn" onclick="toggleCast()" style="background: rgb(9, 132, 227); color: white; border: medium; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; display: none;" title="بث للشاشة (Cast)">📺</button>
-            <button id="adblock-btn" onclick="toggleAdBlock()" style="background: rgb(231, 76, 60); color: white; border: medium; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;" title="درع الإعلانات المنبثقة">اعلانات 🛡️</button>
-            
-            <button onclick="copyChannelLink()" style="background: #8e44ad; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;" title="مشاركة رابط القناة">📤مشاركة </button><button id="editModeBtn" onclick="toggleEditMode()" class="cat-btn tool-btn" style="border-color: rgb(241, 196, 15); color: rgb(241, 196, 15); direction: rtl; background: transparent;">✏️ تعديل</button>
-            <button id="sleep-timer-btn" onclick="setSleepTimer()" style="background: rgb(52, 73, 94); color: white; border: medium; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;" title="مؤقت إغلاق البث (النوم)">⏱</button>
-            <button id="pin-player-btn" onclick="togglePinPlayer()" style="background: #16a085; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;" title="تثبيت المشغل المصغر للتصفح">📌</button>
-            <button onclick="toggleTheater()" style="background: #9b59b6; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;" title="وضع السينما">💡</button>
-            <button onclick="toggleFullScreen()" style="background: #f39c12; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;" title="تكبير الشاشة">⛶تكبير </button>
-            <button id="pip-btn" onclick="togglePiP()" style="background: rgb(52, 152, 219); color: white; border: medium; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; display: none;" title="صورة في صورة">🔲</button>
-            <button onclick="refreshPlayer()" style="background: #2ecc71; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;" title="تحديث البث">🔄</button>
-            <button id="external-open-btn" onclick="openExternalCurrent()" style="background: rgb(255, 235, 59); color: rgb(0, 0, 0); border: medium; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; display: none;" title="فتح في نافذة خارجية">فتح خارجي🔗</button>  
-            <button onclick="closePlayer()" style="background: #ff4757; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: bold;" title="إغلاق المشغل"> إغلاق المشغل ✖</button>
+<div id="az" class="section">
+    <div class="box">
+        <h2>أذكار المسلم 📿</h2>
+        <div style="background:#2d3436; color:#55efc4; padding:20px; border-radius:10px; margin-bottom:15px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);">
+            <h1 id="sibha-count" style="font-size:60px; margin:0;">0</h1>
+            <p id="sibha-text" style="font-size:24px; margin:10px 0 0; color:#fff;">سبحان الله</p>
         </div>
+        <button class="main-btn" onclick="hitSibha()" style="padding:20px 40px; font-size:24px; border-radius:50%; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">سبّح</button>
+        <button class="main-btn" onclick="resetSibha()" style="background:#d63031;">تصفير</button>
 
-        <div id="quality-badge" style="display: none;">📺 الجودة: Auto</div>
-        <select id="quality-selector" style="display: none;" onchange="changeVideoQuality(this.value)"><option value="-1">📺 الجودة: Auto</option><option value="0">270p</option><option value="1">360p</option><option value="2">576p</option><option value="3">720p</option><option value="4">1080p</option></select>
-        
-        <div id="stream-status" style="display: none; color: rgb(0, 255, 0); border-color: rgb(0, 255, 0);">✅ البث شغال</div>
-
-        <video id="my-player" class="hidden" controls="" style="background: #000;" x-webkit-airplay="allow"></video>
-        <iframe id="iframe-player" class="" allowfullscreen="true" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" referrerpolicy="no-referrer" src="" style="border: 10px solid red;"></iframe>
+        <div style="text-align:right; margin-top:20px; border-top:2px solid #eee; padding-top:15px; background: #f9f9f9; padding: 15px; border-radius: 10px;">
+            <h3 style="color:var(--p); margin-top:0;">أذكار سريعة:</h3>
+            <ul style="list-style:none; padding:0; line-height:2; font-size: 16px; color:#333;">
+                <li>🔸 <b>سيد الاستغفار:</b> اللهم أنت ربي لا إله إلا أنت، خلقتني وأنا عبدك، وأنا على عهدك ووعدك ما استطعت...</li>
+                <li>🔸 سبحان الله وبحمده، سبحان الله العظيم (كلمتان خفيفتان على اللسان، ثقيلتان في الميزان).</li>
+                <li>🔸 لا حول ولا قوة إلا بالله (كنز من كنوز الجنة).</li>
+                <li>🔸 أستغفر الله العظيم الذي لا إله إلا هو الحي القيوم وأتوب إليه.</li>
+                <li>🔸 اللهم صلّ وسلم وبارك على نبينا محمد.</li>
+            </ul>
+        </div>
     </div>
-
-    <div id="main-list" class="tv-container list-view" style="display: none !important;">
-<button onclick="playVideo(this, 'https://spoort.en-yalla.live/albaplayer/sport1/')" class="cat-btn match-btn" data-category="sports" title="1" style="background-image: url(&quot;https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Logo_bein_sports_1.png/40px-Logo_bein_sports_1.png&quot;); display: inline-flex;" data-original-index="1">1<div class="fav-icon-star" title="المفضلة">★</div></button>
-
-  
 </div>
+
+<div id="ch" class="section">
+    <div class="box">
+        <h2>شطرنج ضد الكمبيوتر 🤖</h2>
+        <div id="chess-board" class="chess-grid"><div class="sq w-sq">♜</div><div class="sq b-sq">♞</div><div class="sq w-sq">♝</div><div class="sq b-sq">♛</div><div class="sq w-sq">♚</div><div class="sq b-sq">♝</div><div class="sq w-sq">♞</div><div class="sq b-sq">♜</div><div class="sq b-sq">♟</div><div class="sq w-sq">♟</div><div class="sq b-sq">♟</div><div class="sq w-sq">♟</div><div class="sq b-sq">♟</div><div class="sq w-sq">♟</div><div class="sq b-sq">♟</div><div class="sq w-sq">♟</div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq w-sq">♙</div><div class="sq b-sq">♙</div><div class="sq w-sq">♙</div><div class="sq b-sq">♙</div><div class="sq w-sq">♙</div><div class="sq b-sq">♙</div><div class="sq w-sq">♙</div><div class="sq b-sq">♙</div><div class="sq b-sq">♖</div><div class="sq w-sq">♘</div><div class="sq b-sq">♗</div><div class="sq w-sq">♕</div><div class="sq b-sq">♔</div><div class="sq w-sq">♗</div><div class="sq b-sq">♘</div><div class="sq w-sq">♖</div></div>
+        <div id="chess-status">دورك يا بطل (الأبيض) ⚪</div>
+        <button class="main-btn" onclick="resetChess()">لعبة جديدة</button>
+    </div>
+</div>
+
+<div id="bb" class="section">
+    <div class="box">
+        <h2>BBTAN 🔵</h2>
+        <p>المستوى: <span id="bb-lvl" style="color:var(--a); font-weight:bold; font-size:20px;">1</span></p>
+        <canvas id="bbtan" width="300" height="400"></canvas>
+        <button class="main-btn" onclick="initBB()">ابدأ</button>
+    </div>
+</div>
+
+<div id="ca" class="section">
+    <div class="box">
+        <h2>آلة حاسبة علمية 🧮</h2>
+        <div id="disp" style="background:#2d3436;color:#55efc4;padding:15px;text-align:left;font-size:24px;border-radius:5px;margin-bottom:10px;word-wrap:break-word;direction:ltr;min-height:35px;">0</div>
+        <div class="sci-grid">
+            <button class="sci" onclick="calc('sin(')">sin</button>
+            <button class="sci" onclick="calc('cos(')">cos</button>
+            <button class="sci" onclick="calc('tan(')">tan</button>
+            <button class="sci" onclick="calc('(')">(</button>
+            <button class="sci" onclick="calc(')')">)</button>
+
+            <button class="sci" onclick="calc('√(')">√</button>
+            <button class="sci" onclick="calc('^')">^</button>
+            <button class="sci" onclick="calc('π')">π</button>
+            <button class="act" onclick="calc('del')">DEL</button>
+            <button class="act" onclick="calc('c')">C</button>
+
+            <button onclick="calc('7')">7</button>
+            <button onclick="calc('8')">8</button>
+            <button onclick="calc('9')">9</button>
+            <button class="op" onclick="calc('÷')">÷</button>
+            <button class="sci" onclick="calc('log(')">log</button>
+
+            <button onclick="calc('4')">4</button>
+            <button onclick="calc('5')">5</button>
+            <button onclick="calc('6')">6</button>
+            <button class="op" onclick="calc('×')">×</button>
+            <button class="sci" onclick="calc('.')">.</button>
+
+            <button onclick="calc('1')">1</button>
+            <button onclick="calc('2')">2</button>
+            <button onclick="calc('3')">3</button>
+            <button class="op" onclick="calc('-')">-</button>
+            <button class="eq" onclick="calc('=')">=</button>
+
+            <button class="zero" onclick="calc('0')">0</button>
+            <button onclick="calc('00')">00</button>
+            <button class="op" onclick="calc('+')">+</button>
+        </div>
+    </div>
+</div>
+
+<div id="sn" class="section"><div class="box"><h2>الثعبان</h2><canvas id="s-canv" width="300" height="300"></canvas><button class="main-btn" onclick="startSnake()">ابدأ</button></div></div>
+<div id="xo" class="section"><div class="box"><h2>XO</h2><div id="xo-board" class="xo-g"><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div></div><button class="main-btn" onclick="resetXO()">إعادة</button></div></div>
+<div id="cl" class="section"><div class="box"><h2>الضغط</h2><h1 id="score">0</h1><button class="main-btn" onclick="hit()">اضغط!</button></div></div>
+<div id="no" class="section"><div class="box" style="width:80%"><textarea style="width:100%;height:150px;" placeholder="اكتب ملاحظاتك هنا..."></textarea></div></div>
+
+<script>
+    function nav(id, btn) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    // ================= السبحة الإلكترونية =================
+    let s_count = 0;
+    let zekr_list = ['سبحان الله', 'الحمد لله', 'الله أكبر', 'لا إله إلا الله', 'لا حول ولا قوة إلا بالله', 'أستغفر الله'];
+    let z_idx = 0;
     
-
-    <div id="addModal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <h3 style="text-align: center; color: #4caac9; margin-top:0;">➕ إضافة قناة جديدة</h3>
-            <p style="text-align: center; color: #f39c12; font-size: 13px;">(الإضافة مؤقتة وهتتلغي مع التحديث)</p>
-            <input type="text" id="newChName" placeholder="اسم القناة..." _mstplaceholder="2076269" data-ddg-inputtype="unknown">
-            <input type="text" id="newChUrl" placeholder="رابط البث (m3u8, mp4, iframe)..." _mstplaceholder="2214017" data-ddg-inputtype="unknown">
-            <input type="text" id="newChLogo" placeholder="رابط اللوجو (اختياري)..." _mstplaceholder="5487404" data-ddg-inputtype="unknown">
-            <div class="modal-actions">
-                <button class="modal-btn" style="background: #2ecc71; color: white;" onclick="saveNewChannel()">إضافة مؤقتة</button>
-                <button class="modal-btn" style="background: #ff4757; color: white;" onclick="closeAddModal()">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="editModal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <h3 style="text-align: center; color: #f1c40f; margin-top:0;">✏️ تعديل بيانات القناة</h3>
-            <p style="text-align: center; color: #ccc; font-size: 13px;">(التعديل مؤقت وهيتلغي مع التحديث)</p>
-            
-            <label style="display:block; text-align:right; margin-bottom:5px; color:#fff;">اسم القناة الجديد:</label>
-            <input type="text" id="editChName" placeholder="اكتب الاسم هنا..." data-ddg-inputtype="unknown">
-            
-            <label style="display:block; text-align:right; margin-bottom:5px; color:#fff;">رابط البث (اللينك) الجديد:</label>
-            <input type="text" id="editChUrl" placeholder="حط اللينك الجديد هنا..." data-ddg-inputtype="unknown">
-            
-            <label style="display:block; text-align:right; margin-bottom:5px; color:#fff;">حجم الأيقونة (بالبيكسل):</label>
-            <input type="number" id="editChSize" placeholder="الافتراضي 70" value="70" data-ddg-inputtype="unknown">
-            
-            <div class="modal-actions" style="display: flex; gap: 10px; margin-top: 10px;">
-                <button class="modal-btn" style="background: #2ecc71; color: white; width: 50%;" onclick="saveChannelEdit()">حفظ التعديل</button>
-                <button class="modal-btn" style="background: #ff4757; color: white; width: 50%;" onclick="closeEditModal()">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="manageModal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <h3 style="text-align: center; color: #ffeb3b; margin-top:0;">⚙️ إدارة القنوات المضافة</h3>
-            <div id="manageList" class="manage-list"><p style="text-align: center; color: #ccc;">مفيش قنوات متضافة يدوياً لحد دلوقتي.</p></div>
-            <button class="modal-btn" style="background: #ff4757; color: white; width: 100%; margin-top: 10px;" onclick="closeManageModal()">إغلاق</button>
-        </div>
-    </div>
-
-    <div id="matchesModal" class="modal-overlay" style="display: none;">
-        <div class="modal-content" style="width: 95%; max-width: 900px; height: 85vh; display: flex; flex-direction: column;">
-            <h3 style="text-align: center; color: #00d2d3; margin-top:0;">📅 جدول مباريات اليوم</h3>
-            <iframe src="https://www.yallakora.com/match-center" style="width: 100%; flex: 1 1 0%; border: 10px solid red; border-radius: 8px; background: rgb(255, 255, 255);"></iframe>
-            <button class="modal-btn" style="background: #ff4757; color: white; width: 100%; margin-top: 10px;" onclick="closeMatchesModal()">إغلاق الجدول ✖</button>
-        </div>
-    </div>
-
-    <div id="chatModal" class="modal-overlay" style="display: none;">
-        <div class="modal-content" style="width: 95%; max-width: 500px; height: 80vh; display: flex; flex-direction: column;">
-            <h3 style="text-align: center; color: #e84393; margin-top:0;">💬 شات مباشر للمشاهدين</h3>
-            <iframe src="https://minnit.chat/MyTVVIPChat?embed&amp;&amp;nickname=" style="width: 100%; flex: 1 1 0%; border: 10px solid red; border-radius: 8px;"></iframe>
-            <button class="modal-btn" style="background: #ff4757; color: white; width: 100%; margin-top: 10px;" onclick="closeChatModal()">إغلاق الشات ✖</button>
-        </div>
-    </div>
-
-    <div id="fetcherModal" class="modal-overlay" style="display: none;">
-        <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
-            <h3 style="text-align: center; color: #2ecc71; margin-top:0;">🧲 آلة جلب Iframes</h3>
-            <p style="font-size: 13px; color: #ccc; text-align: center;">الطريقة 1: سحب مباشر (للمواقع العادية)</p>
-            <input type="text" id="fetcherUrl" placeholder="حط رابط الصفحة هنا..." _mstplaceholder="4378205" data-ddg-inputtype="unknown">
-            <button class="modal-btn" style="background: #3498db; color: white; width: 100%; margin-bottom: 10px;" onclick="fetchIframes()">جلب الروابط الآن 🚀</button>
-            <div id="fetcherLoading" style="display:none; color: #f39c12; text-align: center; margin: 10px 0; font-weight: bold;">جاري تجربة أكثر من مسار للكسر... ⏳</div>
-            <div id="fetcherResults" style="text-align: right; margin-top: 10px;"></div>
-            
-            <hr style="border-color: #4caac9; margin: 15px 0;">
-            <h4 style="text-align: center; color: #f39c12; margin-top:0;">الطريقة 2: للمواقع المحمية</h4>
-            <div style="text-align: center; margin-bottom: 15px;">
-                <a href="javascript:(function(){let iframes=document.querySelectorAll('iframe');let links=[];iframes.forEach(i=&gt;{let s=i.src||i.getAttribute('data-src');if(s&amp;&amp;!s.includes('google')&amp;&amp;!s.includes('ads')&amp;&amp;!s.includes('taboola')&amp;&amp;!s.includes('analytics')){if(s.startsWith('//'))s='https:'+s;else if(s.startsWith('/'))s=window.location.origin+s;links.push(s);}});let uniqueLinks=[...new Set(links)];if(uniqueLinks.length===0){alert('❌ مفيش سيرفرات هنا!');return;}let out=`&lt;div id='magic-fetcher-overlay' style='position:fixed;top:10%;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:20px;border:2px solid #4caac9;z-index:999999999;border-radius:12px;text-align:center;min-width:350px;box-shadow:0 10px 30px rgba(0,0,0,0.9);'&gt;&lt;h3 style='color:#2ecc71;margin-top:0;'&gt;✅ تم سحب ${uniqueLinks.length} سيرفر&lt;/h3&gt;&lt;textarea id='magicCopyArea' style='width:100%;height:150px;margin-bottom:15px;direction:ltr;background:#111;color:#00ffcc;border:1px solid #4caac9;padding:10px;border-radius:6px;font-family:monospace;' readonly&gt;`;let counter=300;uniqueLinks.forEach(l=&gt;{out+=`&lt;button onclick=\x22playVideo(this, '${l}')\x22 class=\x22cat-btn match-btn\x22 style=\x22display: inline-flex;\x22 data-original-index=\x22${counter}\x22&gt;📺 سيرفر ${counter-299}&lt;div class=\x22fav-icon-star\x22 title=\x22المفضلة\x22&gt;★&lt;/div&gt;&lt;/button&gt;\n`;counter++;});out+=`&lt;/textarea&gt;&lt;br&gt;&lt;button onclick=\x22document.getElementById('magicCopyArea').select();document.execCommand('copy');alert('✅ تم النسخ! روح الزقهم في موقعك.');document.getElementById('magic-fetcher-overlay').remove();\x22 style='background:#f39c12;color:#000;padding:10px;border:none;cursor:pointer;font-weight:bold;border-radius:6px;'&gt;نسخ الزراير 📋&lt;/button&gt; &lt;button onclick=\x22document.getElementById('magic-fetcher-overlay').remove()\x22 style='background:#ff4757;color:#fff;padding:10px;border:none;cursor:pointer;font-weight:bold;border-radius:6px;'&gt;إغلاق ✖&lt;/button&gt;&lt;/div&gt;`;document.body.insertAdjacentHTML('beforeend',out);})();" style="background: #2ecc71; color: #000; padding: 10px 20px; border-radius: 25px; text-decoration: none; font-weight: bold; display: inline-block; cursor: grab;" title="اسحبني لشريط الإشارات المرجعية فوق">🧲 آلة السحب السحرية</a>
-            </div>
-            <button class="modal-btn" style="background: #ff4757; color: white; width: 100%; margin-top: 5px;" onclick="closeFetcherModal()">إغلاق ✖</button>
-        </div>
-    </div>
-
-    <div id="iptvModal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <h3 style="text-align: center; color: #9b59b6; margin-top:0;">📡 سحب ملفات IPTV (M3U)</h3>
-            <p style="text-align: center; color: #ccc; font-size: 13px;">حط رابط الملف (m3u) هنا وهنسحب كل القنوات منه</p>
-            <input type="text" id="iptvUrlInput" placeholder="رابط ملف m3u..." style="direction: ltr;" data-ddg-inputtype="unknown">
-            <button class="modal-btn" style="background: #2ecc71; color: white; width: 100%; margin-bottom: 10px;" onclick="fetchManualIPTV()">سحب القنوات 🚀</button>
-            <div id="iptvLoading" style="display:none; color: #f39c12; text-align: center; margin: 10px 0; font-weight: bold;">جاري السحب وتفكيك الملف... ⏳</div>
-            <button class="modal-btn" style="background: #ff4757; color: white; width: 100%; margin-top: 5px;" onclick="closeIptvModal()">إغلاق ✖</button>
-        </div>
-    </div>
-
-    <div id="externalModal" class="modal-overlay" style="display: none;">
-        <div class="modal-content" style="background-color: #1a1b26; border: 1px solid #3b4252; border-radius: 15px; width: 90%; max-width: 400px; padding: 25px;">
-            <h3 style="text-align: center; color: white; margin-top:0;">تشغيل رابط خارجي 🎬</h3>
-            <p style="text-align: center; color: #a9b1d6; font-size: 13px;">حط رابط القناة أو الفيديو (m3u8, mp4, iframe) هنا وهيشتغل في المشغل</p>
-
-            <input type="text" id="externalLinkInput" placeholder="... رابط الفيديو" style="width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 25px; border: 1px solid #565f89; background-color: #24283b; color: white; outline: none; text-align: right; box-sizing: border-box; font-size: 14px; direction: ltr;" data-ddg-inputtype="unknown">
-
-            <button class="modal-btn" style="background: #00d28a; color: #000; width: 100%; margin-bottom: 12px; border-radius: 25px; font-weight: bold; padding: 12px; border: none; cursor: pointer;" onclick="playExternalLink()">تشغيل القناة ▶️</button>
-
-            <button class="modal-btn" style="background: #ff4d4f; color: white; width: 100%; border-radius: 25px; font-weight: bold; padding: 12px; border: none; cursor: pointer;" onclick="closeExternalModal()">إلغاء ✖</button>
-        </div>
-    </div>
-
-    <div id="top50Modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content" style="max-height: 85vh; overflow-y: auto; width: 95%; max-width: 650px; border-color: #ff9f43;">
-            <h3 style="text-align: center; color: #ff9f43; margin-top:0;">🔥 أشهر 50 موقع ومنصة بث مباشر</h3>
-            <p style="text-align: center; color: #ccc; font-size: 13px;">(اضغط على اسم الموقع للبحث عنه مباشرة وسحب أحدث الروابط)</p>
-            
-            <div style="text-align: right; margin-top: 15px;">
-                
-                <h4 style="color: #4caac9; margin-bottom: 10px; border-bottom: 1px solid #4caac9; padding-bottom: 5px;">⚽ مواقع مباريات رياضية (12 موقع)</h4>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start;">
-                    <a href="https://www.google.com/search?q=موقع+يلا+شوت+بث+مباشر" target="_blank" class="cat-btn match-btn" style="background:#222; text-decoration:none;">يلا شوت (Yalla Shoot)</a>
-                    <a href="https://www.google.com/search?q=موقع+كورة+لايف+بث+مباشر" target="_blank" class="cat-btn match-btn" style="background:#222; text-decoration:none;">كورة لايف</a>
-                    <a href="https://www.google.com/search?q=موقع+الاسطورة+لبث+المباريات" target="_blank" class="cat-btn match-btn" style="background:#222; text-decoration:none;">الأسطورة لايف</a>
-                    <a href="https://www.google.com/search?q=موقع+كورة+سيتي" target="_blank" class="cat-btn match-btn" style="background:#222; text-decoration:none;">كورة سيتي</a>
-                    <a href="https://www.google.com/search?q=موقع+كورة+ستار" target="_blank" class="cat-btn match-btn" style="background:#222; text-decoration:none;">كورة ستار</a>
-                    <a href="https://www.google.com/search?q=موقع+ايجي+لايف+مباريات" target="_blank" class="cat-btn match-btn" style="background:#222; text-decoration:none;">إيجي لايف</a>
-                    <a href="https://www.google.com/search?q=موقع+جول+العرب" target="_blank" class="cat-btn match-btn" style="background:#222; text-decoration:none;">جول العرب</a>
-                    <a href="https://www.google.com/search?q=موقع+يلا+كورة+لايف" target="_blank" class="cat-btn match-btn" style="background:#222; text-decoration:none;">يلا كورة لايف</a>
-                    <a href="https://www.google.com/search?q=ياسين+تيفي+بث+مباشر" target="_blank" class="cat-btn match-btn" style="background:#222; text-decoration:none;">ياسين تيفي (Yacine)</a>
-                    <a href="https://www.google.com/search?q=كورة+اون+لاين" target="_blank" class="cat-btn match-btn" style="background:#222; text-decoration:none;">كورة اون لاين</a>
-                    <a href="https://www.google.com/search?q=موقع+كورة+365" target="_blank" class="cat-btn match-btn" style="background:#222; text-decoration:none;">كورة 365</a>
-                    <a href="https://www.google.com/search?q=يلا+شوت+توداي" target="_blank" class="cat-btn match-btn" style="background:#222; text-decoration:none;">يلا شوت توداي</a>
-                </div>
-
-                <h4 style="color: #e84393; margin-top: 15px; margin-bottom: 10px; border-bottom: 1px solid #e84393; padding-bottom: 5px;">🎬 مواقع أفلام ومسلسلات (8 مواقع)</h4>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start;">
-                    <a href="https://www.google.com/search?q=موقع+ايجي+بست+الاصلي" target="_blank" class="cat-btn tool-btn" style="background:#222; text-decoration:none;">إيجي بست (EgyBest)</a>
-                    <a href="https://www.google.com/search?q=موقع+وي+سيما" target="_blank" class="cat-btn tool-btn" style="background:#222; text-decoration:none;">وي سيما (WeCima)</a>
-                    <a href="https://www.google.com/search?q=موقع+اكوام" target="_blank" class="cat-btn tool-btn" style="background:#222; text-decoration:none;">أكوام (Akoam)</a>
-                    <a href="https://www.google.com/search?q=موقع+عرب+سيد" target="_blank" class="cat-btn tool-btn" style="background:#222; text-decoration:none;">عرب سيد</a>
-                    <a href="https://www.google.com/search?q=موقع+شاهد+فور+يو" target="_blank" class="cat-btn tool-btn" style="background:#222; text-decoration:none;">شاهد فور يو</a>
-                    <a href="https://www.google.com/search?q=موقع+سيما+كلوب" target="_blank" class="cat-btn tool-btn" style="background:#222; text-decoration:none;">سيما كلوب</a>
-                    <a href="https://www.google.com/search?q=موقع+فاصل+اعلاني" target="_blank" class="cat-btn tool-btn" style="background:#222; text-decoration:none;">فاصل إعلاني</a>
-                    <a href="https://www.google.com/search?q=موقع+سيما+فور+يو" target="_blank" class="cat-btn tool-btn" style="background:#222; text-decoration:none;">سيما فور يو</a>
-                </div>
-
-                <h4 style="color: #2ecc71; margin-top: 15px; margin-bottom: 10px; border-bottom: 1px solid #2ecc71; padding-bottom: 5px;">🏆 المنصات العربية الرسمية (10 منصات)</h4>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start;">
-                    <a href="https://shahid.mbc.net/" target="_blank" class="cat-btn" style="background:#222; border-color:#2ecc71; color:#2ecc71; text-decoration:none;">شاهد (Shahid)</a>
-                    <a href="https://www.tod.tv/" target="_blank" class="cat-btn" style="background:#222; border-color:#2ecc71; color:#2ecc71; text-decoration:none;">تود (TOD)</a>
-                    <a href="https://connect.bein.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#2ecc71; color:#2ecc71; text-decoration:none;">بي إن كونكت</a>
-                    <a href="https://www.starzplay.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#2ecc71; color:#2ecc71; text-decoration:none;">ستارز بلاي</a>
-                    <a href="https://osnplus.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#2ecc71; color:#2ecc71; text-decoration:none;">OSN+</a>
-                    <a href="https://www.watchit.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#2ecc71; color:#2ecc71; text-decoration:none;">واتش إت (Watch IT)</a>
-                    <a href="https://adsports.ae/" target="_blank" class="cat-btn" style="background:#222; border-color:#2ecc71; color:#2ecc71; text-decoration:none;">أبوظبي الرياضية</a>
-                    <a href="https://www.ssc.sa/" target="_blank" class="cat-btn" style="background:#222; border-color:#2ecc71; color:#2ecc71; text-decoration:none;">الرياضية السعودية (SSC)</a>
-                    <a href="https://www.alkass.net/" target="_blank" class="cat-btn" style="background:#222; border-color:#2ecc71; color:#2ecc71; text-decoration:none;">قنوات الكاس</a>
-                    <a href="https://www.dubaisports.ae/" target="_blank" class="cat-btn" style="background:#222; border-color:#2ecc71; color:#2ecc71; text-decoration:none;">دبي الرياضية</a>
-                </div>
-
-                <h4 style="color: #9b59b6; margin-top: 15px; margin-bottom: 10px; border-bottom: 1px solid #9b59b6; padding-bottom: 5px;">🌍 المنصات العالمية والجيمنج (20 منصة)</h4>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start;">
-                    <a href="https://www.youtube.com/live" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">يوتيوب لايف</a>
-                    <a href="https://www.twitch.tv/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">تويتش (Twitch)</a>
-                    <a href="https://kick.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">كيك (Kick)</a>
-                    <a href="https://www.facebook.com/gaming/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">فيسبوك جيمنج</a>
-                    <a href="https://www.dailymotion.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">ديليموشن</a>
-                    <a href="https://www.dazn.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">دي أيه زد إن (DAZN)</a>
-                    <a href="https://plus.espn.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">ESPN+</a>
-                    <a href="https://www.netflix.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">نتفليكس</a>
-                    <a href="https://www.primevideo.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">أمازون برايم</a>
-                    <a href="https://www.disneyplus.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">ديزني بلس</a>
-                    <a href="https://www.max.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">إتش بي أو ماكس (HBO)</a>
-                    <a href="https://www.hulu.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">هولو (Hulu)</a>
-                    <a href="https://tv.apple.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">أبل تيفي بلس</a>
-                    <a href="https://www.paramountplus.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">باراماونت بلس</a>
-                    <a href="https://www.peacocktv.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">بيكوك (Peacock)</a>
-                    <a href="https://www.fubo.tv/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">فوبو تيفي (fuboTV)</a>
-                    <a href="https://www.sonyliv.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">سوني ليف</a>
-                    <a href="https://www.hotstar.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">هوت ستار</a>
-                    <a href="https://tubitv.com/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">توبي (Tubi)</a>
-                    <a href="https://pluto.tv/" target="_blank" class="cat-btn" style="background:#222; border-color:#9b59b6; color:#9b59b6; text-decoration:none;">بلوتو تيفي (Pluto TV)</a>
-                </div>
-                
-                <p style="text-align: center; color: #7f8c8d; font-size: 11px; margin-top: 15px;">(المواقع الغير رسمية مبرمجة لفتح بحث جوجل المباشر لضمان الحصول على الدومين الشغال دائماً)</p>
-            </div>
-
-            <button class="modal-btn" style="background: #ff4757; color: white; width: 100%; margin-top: 15px;" onclick="closeTop50Modal()">إغلاق ✖</button>
-        </div>
-    </div>
-
-    <div id="toast" class="" style="direction: rtl;">تم إخفاء قائمة القنوات 🙈</div>
-
-    <script>
-        let favChannels = JSON.parse(localStorage.getItem('favChannels')) || [];
-        let customChannels = []; 
-        let currentPlayingUrl = '';
-        let currentPlayingElement = null;
-
-        let isDeleteMode = false;
-        let isDuplicateMode = false;
-        let isEditMode = false; 
-        let currentEditElement = null; 
-        
-        let deletedChannels = JSON.parse(localStorage.getItem('deletedChannels')) || [];
-        let isAdBlockActive = false;
-
-        const adhkarList = [
-            "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ ، سُبْحَانَ اللَّهِ الْعَظِيمِ",
-            "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ",
-            "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ",
-            "أَسْتَغْفِرُ اللَّهَ الْعَظِيمَ وَأَتُوبُ إِلَيْهِ",
-            "لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
-            "الْحَمْدُ لِلَّهِ حَمْداً كَثِيراً طَيِّباً مُبَارَكاً فِيهِ",
-            "رَضِيتُ بِاللَّهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا، وَبِمُحَمَّدٍ نَبِيًّا",
-            "سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ",
-            "حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ"
-        ];
-        let currentDhikrIndex = 0;
-
-        function startAdhkarTicker() {
-            setInterval(() => {
-                const adhkarElement = document.getElementById('adhkar-text');
-                if(!adhkarElement) return;
-                adhkarElement.style.opacity = 0;
-                setTimeout(() => {
-                    currentDhikrIndex = (currentDhikrIndex + 1) % adhkarList.length;
-                    adhkarElement.innerText = adhkarList[currentDhikrIndex];
-                    adhkarElement.style.opacity = 1;
-                }, 500);
-            }, 7000); 
+    function hitSibha() {
+        s_count++;
+        document.getElementById('sibha-count').innerText = s_count;
+        // تغيير الذكر كل 33 مرة
+        if(s_count > 0 && s_count % 33 === 0) {
+            z_idx = (z_idx + 1) % zekr_list.length;
+            document.getElementById('sibha-text').innerText = zekr_list[z_idx];
         }
-
-        function toggleDeleteMode() {
-            isDeleteMode = !isDeleteMode;
-            let btn = document.getElementById("deleteModeBtn");
-            let dupBtn = document.getElementById("duplicateModeBtn");
-            let editBtn = document.getElementById("editModeBtn");
-            
-            if(isDeleteMode) {
-                btn.style.background = "#c0392b";
-                btn.style.color = "#fff";
-                btn.innerText = "🛑 إيقاف الحذف";
-                
-                if(isDuplicateMode) {
-                    isDuplicateMode = false;
-                    if(dupBtn) { dupBtn.style.background = "transparent"; dupBtn.style.color = "#9b59b6"; dupBtn.innerText = "📋 وضع النسخ"; }
-                }
-                if(isEditMode) {
-                    isEditMode = false;
-                    if(editBtn) { editBtn.style.background = "transparent"; editBtn.style.color = "#f1c40f"; editBtn.innerText = "✏️ وضع التعديل"; }
-                }
-                
-                showToast("وضع الحذف شغال: دوس على أي قناة عشان تمسحها نهائياً! ❌");
-            } else {
-                btn.style.background = "transparent";
-                btn.style.color = "#e74c3c";
-                btn.innerText = "🗑️ وضع الحذف";
-                showToast("تم إيقاف وضع الحذف ✅");
-            }
-        }
-
-        function toggleDuplicateMode() {
-            isDuplicateMode = !isDuplicateMode;
-            let btn = document.getElementById("duplicateModeBtn");
-            let delBtn = document.getElementById("deleteModeBtn");
-            let editBtn = document.getElementById("editModeBtn");
-            
-            if(isDuplicateMode) {
-                btn.style.background = "#9b59b6";
-                btn.style.color = "#fff";
-                btn.innerText = "🛑 إيقاف النسخ";
-                
-                if(isDeleteMode) {
-                    isDeleteMode = false;
-                    if(delBtn) { delBtn.style.background = "transparent"; delBtn.style.color = "#e74c3c"; delBtn.innerText = "🗑️ وضع الحذف"; }
-                }
-                if(isEditMode) {
-                    isEditMode = false;
-                    if(editBtn) { editBtn.style.background = "transparent"; editBtn.style.color = "#f1c40f"; editBtn.innerText = "✏️ وضع التعديل"; }
-                }
-                
-                showToast("وضع النسخ شغال: دوس على أي قناة لنسخها مؤقتاً! 📋");
-            } else {
-                btn.style.background = "transparent";
-                btn.style.color = "#9b59b6";
-                btn.innerText = "📋 وضع النسخ";
-                showToast("تم إيقاف وضع النسخ ✅");
-            }
-        }
-
-        function toggleEditMode() {
-            isEditMode = !isEditMode;
-            let btn = document.getElementById("editModeBtn");
-            let delBtn = document.getElementById("deleteModeBtn");
-            let dupBtn = document.getElementById("duplicateModeBtn");
-            
-            if(isEditMode) {
-                btn.style.background = "#f1c40f";
-                btn.style.color = "#000";
-                btn.innerText = "🛑 إيقاف التعديل";
-                
-                if(isDeleteMode) {
-                    isDeleteMode = false;
-                    if(delBtn) { delBtn.style.background = "transparent"; delBtn.style.color = "#e74c3c"; delBtn.innerText = "🗑️ وضع الحذف"; }
-                }
-                if(isDuplicateMode) {
-                    isDuplicateMode = false;
-                    if(dupBtn) { dupBtn.style.background = "transparent"; dupBtn.style.color = "#9b59b6"; dupBtn.innerText = "📋 وضع النسخ"; }
-                }
-                
-                showToast("وضع التعديل شغال: دوس على أي قناة عشان تعدل اللينك بتاعها! ✏️");
-            } else {
-                btn.style.background = "transparent";
-                btn.style.color = "#f1c40f";
-                btn.innerText = "✏️ وضع التعديل";
-                showToast("تم إيقاف وضع التعديل ✅");
-            }
-        }
-
-        function openEditModal(el) {
-            currentEditElement = el;
-            
-            let currentName = el.getAttribute('title') || el.innerText.replace('★', '').trim();
-            document.getElementById('editChName').value = currentName;
-            
-            let onclickStr = el.getAttribute('onclick') || '';
-            let urlMatch = onclickStr.match(/['"](.*?)['"]/);
-            let currentUrl = urlMatch ? urlMatch[1] : '';
-            document.getElementById('editChUrl').value = currentUrl;
-            
-            let currentSize = 70; 
-            if(el.classList.contains('tv-box')) {
-                let widthStr = el.style.width || window.getComputedStyle(el).width;
-                if(widthStr) currentSize = parseInt(widthStr);
-            }
-            document.getElementById('editChSize').value = currentSize;
-            
-            document.getElementById('editModal').style.display = 'flex';
-        }
-
-        function closeEditModal() {
-            document.getElementById('editModal').style.display = 'none';
-            currentEditElement = null;
-        }
-
-        function saveChannelEdit() {
-            if(!currentEditElement) return;
-            
-            let newName = document.getElementById('editChName').value.trim();
-            let newUrl = document.getElementById('editChUrl').value.trim();
-            let newSize = document.getElementById('editChSize').value.trim();
-            
-            if(newName) {
-                currentEditElement.setAttribute('title', newName);
-                if(currentEditElement.classList.contains('match-btn')) {
-                    let star = currentEditElement.querySelector('.fav-icon-star');
-                    currentEditElement.innerText = newName;
-                    if(star) currentEditElement.appendChild(star);
-                }
-            }
-            
-            if(newUrl) {
-                currentEditElement.setAttribute('onclick', `playVideo(this, '${newUrl}')`);
-            }
-            
-            if(newSize && currentEditElement.classList.contains('tv-box')) {
-                currentEditElement.style.setProperty('width', newSize + 'px', 'important');
-                currentEditElement.style.setProperty('height', newSize + 'px', 'important');
-            }
-            
-            closeEditModal();
-            showToast("تم تعديل اللينك وبيانات القناة بنجاح ✏️✅");
-        }
-
-        function applyDeletedChannels() {
-            document.querySelectorAll('.tv-box, .match-btn').forEach(ch => {
-                let onclickStr = ch.getAttribute('onclick') || '';
-                let urlMatch = onclickStr.match(/['"](http.*?)['"]/);
-                if (urlMatch && deletedChannels.includes(urlMatch[1])) {
-                    ch.remove(); 
-                }
-            });
-        }
-
-        document.addEventListener('click', function(e) {
-            let channelBtn = e.target.closest('.tv-box') || e.target.closest('.match-btn');
-            
-            if (channelBtn && !channelBtn.closest('.control-group') && channelBtn.id !== 'themeToggleBtn' && channelBtn.id !== 'last-channel-container') {
-                
-                if (isDeleteMode || isDuplicateMode || isEditMode) {
-                    e.preventDefault();
-                    e.stopPropagation(); 
-                    
-                    if (isDeleteMode) {
-                        if(confirm("متأكد إنك عايز تحذف القناة دي بشكل نهائي؟")) {
-                            let onclickStr = channelBtn.getAttribute('onclick') || '';
-                            let urlMatch = onclickStr.match(/['"](http.*?)['"]/);
-                            if (urlMatch && urlMatch[1]) {
-                                deletedChannels.push(urlMatch[1]);
-                                localStorage.setItem('deletedChannels', JSON.stringify(deletedChannels));
-                            }
-                            channelBtn.remove();
-                            showToast("تم الحذف بنجاح 🗑️");
-                        }
-                    } 
-                    else if (isDuplicateMode) {
-                        let clonedNode = channelBtn.cloneNode(true);
-                        let deadStar = clonedNode.querySelector('.fav-icon-star');
-                        if (deadStar) deadStar.remove();
-                        channelBtn.parentNode.insertBefore(clonedNode, channelBtn.nextSibling);
-                        injectFavStars();
-                        initChannelsIndex();
-                        showToast("تم نسخ القناة بنجاح (نسخة مؤقتة) 📋✅");
-                    }
-                    else if (isEditMode) {
-                        openEditModal(channelBtn);
-                    }
-                }
-            }
-        }, true);
-
-        function toggleViewMode() {
-            const container = document.getElementById('main-list');
-            if(!container) return;
-            const btn = document.getElementById('viewToggleBtn');
-            container.classList.toggle('list-view');
-            const isListView = container.classList.contains('list-view');
-            localStorage.setItem('viewMode', isListView ? 'list' : 'grid');
-            if (isListView) {
-                btn.innerHTML = '🔲 شبكة';
-                if(document.body.classList.contains('light-theme')) {
-                    btn.style.background = '#fff';
-                    btn.style.color = '#111';
-                } else {
-                    btn.style.background = '#222';
-                    btn.style.color = '#fff';
-                }
-            } else {
-                btn.innerHTML = '🔣 قايمة';
-            }
-        }
-
-        function applySavedViewMode() {
-            const savedMode = localStorage.getItem('viewMode');
-            const container = document.getElementById('main-list');
-            const btn = document.getElementById('viewToggleBtn');
-            if (savedMode === 'list' && container) {
-                container.classList.add('list-view');
-                if(btn) btn.innerHTML = '🔲 شبكة';
-            }
-        }
-
-        function renderCustomChannels() {
-            let container = document.getElementById('main-list');
-            if(!container) return;
-            document.querySelectorAll('.custom-user-ch').forEach(el => el.remove()); 
-            customChannels.forEach((ch, index) => {
-                let html = '';
-                if(ch.logo) {
-                    html = `<a href="javascript:void(0)" class="tv-box custom-user-ch" data-category="all" onclick="playVideo(this, '${ch.url}')" style="background-image: url('${ch.logo}'); display: inline-flex;" title="${ch.name}"></a>`;
-                } else {
-                    html = `<button onclick="playVideo(this, '${ch.url}')" class="cat-btn match-btn custom-user-ch" data-category="all" style="display: inline-flex;" title="${ch.name}">${ch.name}</button>`;
-                }
-                container.insertAdjacentHTML('beforeend', html);
-            });
-            injectFavStars();
-            initChannelsIndex(); 
-        }
-
-        function openAddModal() { document.getElementById('addModal').style.display = 'flex'; }
-        function closeAddModal() { document.getElementById('addModal').style.display = 'none'; }
-        
-        function saveNewChannel() {
-            let name = document.getElementById('newChName').value.trim();
-            let url = document.getElementById('newChUrl').value.trim();
-            let logo = document.getElementById('newChLogo').value.trim();
-            if(!name || !url) {
-                showToast("لازم تكتب اسم القناة ورابط البث ❌");
-                return;
-            }
-            
-            customChannels.push({ name, url, logo });
-            
-            document.getElementById('newChName').value = '';
-            document.getElementById('newChUrl').value = '';
-            document.getElementById('newChLogo').value = '';
-            closeAddModal();
-            renderCustomChannels();
-            showToast("تمت الإضافة مؤقتاً وهتتلغي مع التحديث ✅");
-        }
-
-        function openManageModal() {
-            let list = document.getElementById('manageList');
-            list.innerHTML = '';
-            if(customChannels.length === 0) {
-                list.innerHTML = '<p style="text-align: center; color: #ccc;">مفيش قنوات متضافة يدوياً لحد دلوقتي.</p>';
-            } else {
-                customChannels.forEach((ch, index) => {
-                    list.innerHTML += `
-                        <div class="manage-item" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #444; padding:8px 0;">
-                            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 70%; font-weight: bold;" title="${ch.name}">${ch.name}</span>
-                            <button class="del-btn" style="background:#e74c3c; border:none; padding:5px 10px; border-radius:5px; color:#fff; cursor:pointer;" onclick="deleteCustomChannel(${index})">حذف 🗑</button>
-                        </div>
-                    `;
-                });
-            }
-            document.getElementById('manageModal').style.display = 'flex';
-        }
-
-        function closeManageModal() { document.getElementById('manageModal').style.display = 'none'; }
-
-        function deleteCustomChannel(index) {
-            if(confirm('متأكد إنك عايز تحذف القناة دي؟')) {
-                customChannels.splice(index, 1);
-                openManageModal(); 
-                renderCustomChannels(); 
-                showToast("تم الحذف بنجاح 🗑");
-            }
-        }
-
-        // --- أكواد تشغيل الرابط الخارجي ---
-        function openExternalModal() { 
-            document.getElementById('externalModal').style.display = 'flex'; 
-        }
-        
-        function closeExternalModal() { 
-            document.getElementById('externalModal').style.display = 'none'; 
-            document.getElementById('externalLinkInput').value = ''; 
-        }
-
-        function playExternalLink() {
-            let link = document.getElementById('externalLinkInput').value.trim();
-            if (link !== "") {
-                playVideo(null, link);
-                closeExternalModal();
-                showToast("جاري تشغيل الرابط الخارجي 🚀");
-            } else {
-                showToast("يا ريت تحط رابط الأول قبل التشغيل ❌");
-            }
-        }
-
-        // --- أكواد نافذة أشهر 50 موقع ---
-        function openTop50Modal() { document.getElementById('top50Modal').style.display = 'flex'; }
-        function closeTop50Modal() { document.getElementById('top50Modal').style.display = 'none'; }
-
-        function openExternalCurrent() {
-            if(currentPlayingUrl) { window.open(currentPlayingUrl, '_blank'); }
-        }
-
-        function refreshPlayer() {
-            if (currentPlayingUrl) {
-                showToast("جاري تحديث البث... 🔄");
-                if (currentPlayingElement) {
-                    playVideo(currentPlayingElement, currentPlayingUrl);
-                } else {
-                    playVideo(null, currentPlayingUrl);
-                }
-            }
-        }
-
-        function togglePiP() {
-            const video = document.getElementById('my-player');
-            if (document.pictureInPictureElement) {
-                document.exitPictureInPicture();
-            } else if (video && !video.classList.contains('hidden')) {
-                video.requestPictureInPicture().catch(err => {
-                    showToast("المتصفح بتاعك مش بيدعم الخاصية دي حالياً ❌");
-                });
-            } else {
-                showToast("الخاصية دي شغالة مع المشغل الداخلي بس ❌");
-            }
-        }
-
-        function toggleCast() {
-            const video = document.getElementById('my-player');
-            if (video && video.remote && video.remote.state !== 'disconnected') {
-                video.remote.prompt().catch(err => {
-                    showToast("مفيش جهاز قريب للبث أو المتصفح مش داعم ❌");
-                });
-            } else {
-                showToast("خاصية البث متوفرة للسيرفرات الداخلية فقط ❌");
-            }
-        }
-
-        
-          function toggleAdBlock() {
-    isAdBlockActive = !isAdBlockActive;
-    let btn = document.getElementById('adblock-btn');
-    let iframe = document.getElementById('iframe-player');
-    
-    if (isAdBlockActive) {
-        btn.style.background = "#e74c3c";
-        // هنا الحماية شغالة (مفيش popups)
-        iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
-        showToast("تم تشغيل درع الإعلانات 🛡️ (لو البث علق، اطفيه)");
-    } else {
-        btn.style.background = "#34495e";
-        // هنا الحماية مطفية (مسموح بالـ popups عشان السيرفرات تفتح)
-        iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms allow-presentation allow-top-navigation-by-user-activation');
-        showToast("تم إيقاف درع الإعلانات ⚠️");
     }
     
-    if(iframe.src && iframe.src !== "" && !iframe.classList.contains('hidden')){
-        let tempSrc = iframe.src;
-        iframe.src = tempSrc;
+    function resetSibha() {
+        s_count = 0; z_idx = 0;
+        document.getElementById('sibha-count').innerText = s_count;
+        document.getElementById('sibha-text').innerText = zekr_list[z_idx];
     }
-}
 
-        function copyChannelLink() {
-            if(currentPlayingUrl) {
-                navigator.clipboard.writeText(currentPlayingUrl).then(() => {
-                    showToast("تم نسخ رابط البث بنجاح 📋");
-                }).catch(err => {
-                    showToast("فشل نسخ الرابط ❌");
-                });
-            } else {
-                showToast("لا يوجد بث شغال لنسخه ❌");
-            }
-        }
-
-        let sleepTimerInterval;
-        let sleepMinutes = 0;
-        function setSleepTimer() {
-            if (!currentPlayingUrl) { showToast("شغل قناة الأول ❌"); return; }
-            if (sleepMinutes === 0) sleepMinutes = 15;
-            else if (sleepMinutes === 15) sleepMinutes = 30;
-            else if (sleepMinutes === 30) sleepMinutes = 60;
-            else if (sleepMinutes === 60) sleepMinutes = 0;
-
-            let btn = document.getElementById('sleep-timer-btn');
-            clearInterval(sleepTimerInterval);
-
-            if (sleepMinutes === 0) {
-                btn.style.background = "#34495e";
-                btn.innerText = "⏱";
-                showToast("تم إلغاء مؤقت النوم 🚫");
-            } else {
-                btn.style.background = "#e74c3c";
-                btn.innerText = "⏱ " + sleepMinutes + "m";
-                showToast("سيتم إغلاق البث بعد " + sleepMinutes + " دقيقة 🌙");
-                sleepTimerInterval = setTimeout(() => {
-                    closePlayer();
-                    showToast("تم إغلاق البث بناءً على مؤقت النوم 💤");
-                    sleepMinutes = 0;
-                    btn.style.background = "#34495e";
-                    btn.innerText = "⏱";
-                }, sleepMinutes * 60 * 1000);
-            }
-        }
-
-        function togglePinPlayer() {
-            let wrapper = document.getElementById("media-wrapper");
-            wrapper.classList.toggle("pinned-player");
-            if (wrapper.classList.contains("pinned-player")) {
-                showToast("تم تثبيت المشغل المصغر 📌");
-            } else {
-                showToast("تم إلغاء التثبيت 🔙");
-            }
-        }
-
-        function showToast(msg) {
-            let toast = document.getElementById("toast");
-            toast.innerHTML = msg;
-            toast.className = "show";
-            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
-        }
-
-        function injectFavStars() {
-            document.querySelectorAll('.tv-box, .match-btn').forEach(ch => {
-                if (ch.closest('.category-buttons') || ch.id === 'themeToggleBtn' || ch.id === 'scrollTopBtn' || ch.id === 'favBtn' || ch.id === 'viewToggleBtn' || ch.id === 'deleteModeBtn' || ch.id === 'duplicateModeBtn' || ch.id === 'editModeBtn') return;
-                
-                let onclickStr = ch.getAttribute('onclick') || '';
-                let urlMatch = onclickStr.match(/['"](.*?)['"]/);
-                let channelUrl = urlMatch ? urlMatch[1] : '';
-
-                if (!channelUrl) return; 
-
-                let star = ch.querySelector('.fav-icon-star');
-                if (!star) {
-                    star = document.createElement('div');
-                    star.className = 'fav-icon-star';
-                    star.innerHTML = '★';
-                    star.title = "المفضلة";
-                    ch.appendChild(star);
-                }
-
-                if (favChannels.includes(channelUrl)) { ch.classList.add('is-fav'); } 
-                else { ch.classList.remove('is-fav'); }
-                
-                star.onclick = function(e) {
-                    e.stopPropagation(); e.preventDefault();
-                    let index = favChannels.indexOf(channelUrl);
-                    if(index > -1) {
-                        favChannels.splice(index, 1);
-                        ch.classList.remove('is-fav');
-                        showToast("تم الحذف من المفضلة ❌");
-                    } else {
-                        favChannels.push(channelUrl);
-                        ch.classList.add('is-fav');
-                        showToast("تمت الإضافة للمفضلة ⭐");
-                    }
-                    localStorage.setItem('favChannels', JSON.stringify(favChannels));
-                    
-                    let activeCat = document.querySelector('.active-cat');
-                    if(activeCat && activeCat.getAttribute('onclick').includes('fav')) {
-                        filterChannels('fav');
-                    }
-                };
-            });
-        }
-
-        function initChannelsIndex() {
-            let container = document.getElementById('main-list');
-            if(!container) return;
-            let allChannels = container.querySelectorAll('.tv-box, .match-btn');
-            let currentIndex = 0;
-            allChannels.forEach((ch) => {
-                if (!ch.hasAttribute('data-original-index')) {
-                    ch.setAttribute('data-original-index', currentIndex++);
-                } else {
-                    currentIndex = Math.max(currentIndex, parseInt(ch.getAttribute('data-original-index')) + 1);
-                }
-            });
-        }
-
-        function sortChannels() {
-            let sortType = document.getElementById('sortSelect').value;
-            let container = document.getElementById('main-list');
-            if(!container) return;
-            let channels = Array.from(container.querySelectorAll('.tv-box, .match-btn'));
-            let validChannels = channels.filter(ch => ch.hasAttribute('data-original-index'));
-            validChannels.sort((a, b) => {
-                if (sortType === 'default') {
-                    return parseInt(a.getAttribute('data-original-index')) - parseInt(b.getAttribute('data-original-index'));
-                }
-                let nameA = (a.getAttribute('title') || a.textContent || "").replace('★', '').trim().toLowerCase();
-                let nameB = (b.getAttribute('title') || b.textContent || "").replace('★', '').trim().toLowerCase();
-                if (sortType === 'az') return nameA.localeCompare(nameB, 'ar');
-                else if (sortType === 'za') return nameB.localeCompare(nameA, 'ar');
-            });
-            validChannels.forEach(ch => container.appendChild(ch));
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            applySavedTheme();
-            applySavedViewMode();
-            applyDeletedChannels(); 
-            renderCustomChannels(); 
-            startAdhkarTicker();
-            injectFavStars();
-            initChannelsIndex();
-
-            let lastCh = localStorage.getItem('lastPlayedChannel');
-            if(lastCh) {
-                let btnContainer = document.getElementById('last-channel-container');
-                if(!btnContainer) {
-                    btnContainer = document.createElement('div');
-                    btnContainer.id = 'last-channel-container';
-                    btnContainer.style.marginBottom = '15px';
-                    document.querySelector('.search-sort-container').insertAdjacentElement('beforebegin', btnContainer);
-                }
-                btnContainer.innerHTML = `<button class="cat-btn match-btn" style="background:#2ecc71; color:#fff;" onclick="playLast()">▶️ تشغيل آخر قناة وقفت عليها</button>`;
-            }
-        });
-
-        function playLast() {
-            let lastCh = localStorage.getItem('lastPlayedChannel');
-            if(lastCh) { playVideo(findElementByUrl(lastCh), lastCh); }
-        }
-
-        function filterChannels(category) {
-            document.querySelectorAll('.category-buttons .cat-btn').forEach(b => b.classList.remove('active-cat'));
-            event.currentTarget.classList.add('active-cat');
-            document.querySelectorAll('.tv-box, .match-btn').forEach(ch => {
-                if (ch.closest('.category-buttons') || ch.closest('#last-channel-container') || ch.id === 'themeToggleBtn' || ch.id === 'scrollTopBtn' || ch.id === 'favBtn' || ch.id === 'viewToggleBtn' || ch.id === 'deleteModeBtn' || ch.id === 'duplicateModeBtn' || ch.id === 'editModeBtn') return;
-                if (category === 'all') {
-                    ch.style.display = "inline-flex";
-                } else if (category === 'fav') {
-                    ch.style.display = ch.classList.contains('is-fav') ? "inline-flex" : "none";
-                } else {
-                    ch.style.display = (ch.getAttribute('data-category') === category) ? "inline-flex" : "none";
-                }
-            });
-        }
-
-        function searchChannels() { 
-            let input = document.getElementById('searchInput').value.toLowerCase(); 
-            document.querySelectorAll('.tv-box, .match-btn').forEach(ch => { 
-                if(ch.closest('.category-buttons') || ch.id === 'themeToggleBtn' || ch.id === 'scrollTopBtn' || ch.id === 'favBtn' || ch.id === 'viewToggleBtn' || ch.id === 'deleteModeBtn' || ch.id === 'duplicateModeBtn' || ch.id === 'editModeBtn') return;
-                ch.style.display = (ch.getAttribute('title') || ch.textContent || "").toLowerCase().includes(input) ? "inline-flex" : "none"; 
-            }); 
-        }
-
-        function applySavedTheme() {
-            const savedTheme = localStorage.getItem('site-theme') || 'dark';
-            const themeBtn = document.getElementById('themeToggleBtn');
-            if (savedTheme === 'light') { document.body.classList.add('light-theme'); if (themeBtn) themeBtn.textContent = '☀️ الوضع الفاتح'; }
-            else { document.body.classList.remove('light-theme'); if (themeBtn) themeBtn.textContent = '🌙 الوضع الداكن'; }
-        }
-
-        function toggleTheme() {
-            const isLight = document.body.classList.toggle('light-theme');
-            localStorage.setItem('site-theme', isLight ? 'light' : 'dark');
-            const themeBtn = document.getElementById('themeToggleBtn');
-            if (themeBtn) themeBtn.textContent = isLight ? '☀️ الوضع الفاتح' : '🌙 الوضع الداكن';
-            const viewBtn = document.getElementById('viewToggleBtn');
-            const mainList = document.getElementById('main-list');
-            if(mainList && mainList.classList.contains('list-view')) {
-                if(isLight) {
-                    viewBtn.style.background = '#fff';
-                    viewBtn.style.color = '#111';
-                } else {
-                    viewBtn.style.background = '#222';
-                    viewBtn.style.color = '#fff';
-                }
-            }
-        }
-
-        setInterval(() => { 
-            let clock = document.getElementById('live-clock');
-            if(clock) clock.innerHTML = "⏱ توقيت البث: " + new Date().toLocaleTimeString('en-US'); 
-        }, 1000);
-
-        const iframeVideo = document.getElementById('iframe-player');
-        const videoPlayer = document.getElementById('my-player');
-        const mediaWrapper = document.getElementById('media-wrapper');
-        let hlsInstance = null;
-
-        function findElementByUrl(url) {
-            let found = null;
-            document.querySelectorAll('.tv-box, .match-btn').forEach(ch => {
-                if(ch.closest('.category-buttons')) return;
-                let onclick = ch.getAttribute('onclick') || '';
-                if(onclick.includes(url)) found = ch;
-            });
-            return found;
-        }
-
-        function autoPlayNextServer() {
-            if (!currentPlayingElement) return;
-            let allChannels = Array.from(document.querySelectorAll('#main-list .tv-box, #main-list .match-btn'));
-            let currentIndex = allChannels.indexOf(currentPlayingElement);
-            if (currentIndex > -1 && currentIndex + 1 < allChannels.length) {
-                let nextCh = allChannels[currentIndex + 1];
-                let onclickStr = nextCh.getAttribute('onclick') || '';
-                let urlMatch = onclickStr.match(/['"](http.*?)['"]/);
-                if (urlMatch && urlMatch[1]) {
-                    showToast("⚠️ البث فصل.. جاري النقل للسيرفر البديل آلياً 🔄");
-                    setTimeout(() => { playVideo(nextCh, urlMatch[1]); }, 3000); 
-                }
-            } else {
-                showToast("❌ البث فصل ومفيش سيرفر تالت في القايمة");
-            }
-        }
-
-        function changeVideoQuality(levelIndex) {
-            if (hlsInstance) {
-                hlsInstance.currentLevel = parseInt(levelIndex);
-                if (levelIndex == -1) {
-                    showToast("تم تفعيل الجودة التلقائية ⚙️");
-                } else {
-                    let level = hlsInstance.levels[levelIndex];
-                    showToast("تم تغيير الجودة إلى " + level.height + "p 📺");
-                }
-            }
-        }
-
-        function updateMediaSession(title, poster) {
-            if ('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: title,
-                    artist: 'MY TV VIP',
-                    album: 'البث المباشر',
-                    artwork: [
-                        { src: poster || 'icon-192.png', sizes: '192x192', type: 'image/png' },
-                        { src: poster || 'icon-192.png', sizes: '512x512', type: 'image/png' }
-                    ]
-                });
-            }
-        }
-
-        function playVideo(element, url) {
-            if(!url) return;
-            document.querySelectorAll('.tv-box, .match-btn').forEach(box => box.classList.remove('active-channel'));
-            
-            currentPlayingUrl = url;
-            currentPlayingElement = element || findElementByUrl(url);
-            if(currentPlayingElement) currentPlayingElement.classList.add('active-channel');
-            
-            let chName = currentPlayingElement ? (currentPlayingElement.getAttribute('title') || currentPlayingElement.innerText.replace('★', '').trim()) : 'قناة مباشرة';
-            let chLogo = currentPlayingElement ? (currentPlayingElement.style.backgroundImage.slice(5, -2).replace(/"/g, "")) : 'icon-192.png';
-            updateMediaSession(chName, chLogo);
-
-            localStorage.setItem('lastPlayedChannel', url);
-
-            mediaWrapper.style.display = 'flex'; 
-            mediaWrapper.scrollIntoView({ behavior: 'smooth' });
-            
-            let finalUrl = url.toLowerCase();
-            let qualityBadge = document.getElementById('quality-badge'); 
-            let qualitySelector = document.getElementById('quality-selector');
-            let streamStatus = document.getElementById('stream-status');
-            
-            document.getElementById('external-open-btn').style.display = 'none';
-            let pipBtn = document.getElementById('pip-btn');
-            if (pipBtn) pipBtn.style.display = 'none';
-            let castBtn = document.getElementById('cast-btn');
-            
-            if (finalUrl.includes('.m3u8') || finalUrl.includes('.ts') || finalUrl.includes('.m3u')) {
-                iframeVideo.classList.add('hidden'); 
-                videoPlayer.classList.remove('hidden');
-                iframeVideo.src = "";
-                
-                if (pipBtn) pipBtn.style.display = 'inline-block'; 
-                if (castBtn) castBtn.style.display = 'inline-block'; 
-                
-                qualitySelector.style.display = 'none';
-                qualityBadge.style.display = 'block';
-                qualityBadge.innerHTML = '📺 الجودة: جاري التحقق...';
-                
-                streamStatus.style.display = 'block';
-                streamStatus.innerHTML = '⏳ جاري الفحص...';
-                streamStatus.style.color = '#ffeb3b';
-                streamStatus.style.borderColor = '#ffeb3b';
-                
-                if (hlsInstance) { hlsInstance.destroy(); }
-                
-                if (Hls.isSupported()) {
-                    hlsInstance = new Hls();
-                    hlsInstance.loadSource(url);
-                    hlsInstance.attachMedia(videoPlayer);
-                    
-                    hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
-                        videoPlayer.play();
-                        streamStatus.innerHTML = '✅ البث شغال';
-                        streamStatus.style.color = '#00ff00';
-                        streamStatus.style.borderColor = '#00ff00';
-
-                        if (hlsInstance.levels && hlsInstance.levels.length > 1) {
-                            qualityBadge.style.display = 'none'; 
-                            qualitySelector.innerHTML = '<option value="-1">📺 الجودة: Auto</option>'; 
-                            hlsInstance.levels.forEach((level, index) => {
-                                qualitySelector.innerHTML += `<option value="${index}">${level.height}p</option>`;
-                            });
-                            qualitySelector.style.display = 'block'; 
-                        } else {
-                            qualitySelector.style.display = 'none';
-                            qualityBadge.style.display = 'block';
-                            let level = hlsInstance.levels[0];
-                            qualityBadge.innerHTML = (level && level.height) ? '📺 الجودة: ' + level.height + 'p' : '📺 الجودة: Auto';
-                        }
-                    });
-
-                    hlsInstance.on(Hls.Events.ERROR, function(event, data) {
-                        if (data.fatal) {
-                            streamStatus.innerHTML = '❌ البث فاصل حالياً';
-                            streamStatus.style.color = '#ff4757';
-                            streamStatus.style.borderColor = '#ff4757';
-                            qualityBadge.style.display = 'none';
-                            qualitySelector.style.display = 'none';
-                            document.getElementById('external-open-btn').style.display = 'inline-block';
-                            autoPlayNextServer();
-                        }
-                    });
-                    
-                } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
-                    videoPlayer.src = url;
-                    videoPlayer.addEventListener('loadedmetadata', function() {
-                        videoPlayer.play();
-                        streamStatus.innerHTML = '✅ البث شغال';
-                        streamStatus.style.color = '#00ff00';
-                        streamStatus.style.borderColor = '#00ff00';
-                    });
-                    videoPlayer.onerror = function() {
-                        streamStatus.innerHTML = '❌ البث فاصل حالياً';
-                        streamStatus.style.color = '#ff4757';
-                        streamStatus.style.borderColor = '#ff4757';
-                        document.getElementById('external-open-btn').style.display = 'inline-block';
-                        autoPlayNextServer();
-                    };
-                }
-            } 
-            else if (finalUrl.includes('anisfm') || finalUrl.includes('dpdns') || finalUrl.includes('.mp3') || finalUrl.includes('radiojar')) {
-                videoPlayer.classList.add('hidden'); 
-                iframeVideo.classList.remove('hidden');
-                if (hlsInstance) { hlsInstance.destroy(); }
-                videoPlayer.pause();
-                
-                if (pipBtn) pipBtn.style.display = 'none'; 
-                if (castBtn) castBtn.style.display = 'none'; 
-                
-                qualitySelector.style.display = 'none';
-                qualityBadge.style.display = 'block';
-                qualityBadge.innerHTML = '📻 راديو مباشر';
-                
-                streamStatus.style.display = 'block';
-                streamStatus.innerHTML = '✅ مشغل الصوت جاهز';
-                streamStatus.style.color = '#00ff00';
-                streamStatus.style.borderColor = '#00ff00';
-
-                let audioHtml = `
-                    <html dir="rtl">
-                    <head><meta name="viewport" content="width=device-width, initial-scale=1"></head>
-                    <body style="background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; margin:0; color:#4caac9; font-family:sans-serif;">
-                        <h2 style="margin-bottom: 20px; text-shadow: 0px 0px 10px #4caac9;">📻 جاري البث المباشر</h2>
-                        <audio controls autoplay style="width: 80%; outline: none; border-radius: 25px; box-shadow: 0 0 15px rgba(76, 170, 201, 0.5);">
-                            <source src="${url}" type="audio/mpeg">
-                            <source src="${url}/;" type="audio/mpeg">
-                            <source src="${url}/stream" type="audio/mpeg">
-                            متصفحك لا يدعم تشغيل الصوت.
-                        </audio>
-                    </body>
-                    </html>
-                `;
-                iframeVideo.src = 'data:text/html;charset=utf-8,' + encodeURIComponent(audioHtml);
-                document.getElementById('external-open-btn').style.display = 'inline-block';
-            }
-            else {
-                videoPlayer.classList.add('hidden'); 
-                iframeVideo.classList.remove('hidden');
-                qualityBadge.style.display = 'none'; 
-                qualitySelector.style.display = 'none';
-                streamStatus.style.display = 'none';
-                if (hlsInstance) { hlsInstance.destroy(); }
-                videoPlayer.pause();
-                if (castBtn) castBtn.style.display = 'none'; 
-                
-                document.getElementById('external-open-btn').style.display = 'inline-block';
-                iframeVideo.src = url.replace("watch?v=", "embed/") + (url.includes("?") ? "&autoplay=1" : "?autoplay=1");
-            }
-        }
-
-        function closePlayer() { 
-            if (hlsInstance) { hlsInstance.destroy(); }
-            videoPlayer.pause();
-            if (document.pictureInPictureElement) { document.exitPictureInPicture(); }
-            
-            let wrapper = document.getElementById("media-wrapper");
-            if (wrapper.classList.contains("pinned-player")) { wrapper.classList.remove("pinned-player"); }
-
-            clearInterval(sleepTimerInterval);
-            let timerBtn = document.getElementById('sleep-timer-btn');
-            if (timerBtn) {
-                sleepMinutes = 0;
-                timerBtn.style.background = "#34495e";
-                timerBtn.innerText = "⏱";
-            }
-
-            iframeVideo.src = ""; 
-            mediaWrapper.style.display = 'none'; 
-            document.getElementById('quality-badge').style.display = 'none'; 
-            document.getElementById('quality-selector').style.display = 'none'; 
-            document.getElementById('stream-status').style.display = 'none';
-            document.getElementById('external-open-btn').style.display = 'none';
-            
-            let pipBtn = document.getElementById('pip-btn');
-            if (pipBtn) pipBtn.style.display = 'none';
-            
-            document.querySelectorAll('.tv-box, .match-btn').forEach(b => b.classList.remove('active-channel')); 
-        }
-
-        window.onscroll = function() {
-            let scrollBtn = document.getElementById("scrollTopBtn");
-            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) scrollBtn.style.display = "block";
-            else scrollBtn.style.display = "none";
-        };
-
-        function toggleTheater() {
-            let wrapper = document.getElementById("media-wrapper");
-            wrapper.classList.toggle("theater-mode");
-            document.body.classList.toggle("theater-active");
-            if(wrapper.classList.contains("theater-mode")) {
-                showToast("تم تفعيل وضع السينما 🎬");
-                window.scrollTo({top: 0, behavior: 'smooth'});
-            } else {
-                showToast("تم إغلاق وضع السينما 💡");
-            }
-        }
-
-        function toggleFullScreen() {
-            let elem = document.getElementById("media-wrapper");
-            if (!document.fullscreenElement) {
-                elem.requestFullscreen().catch(err => {
-                    showToast("المتصفح لا يدعم تكبير الشاشة ❌");
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        }
-
-        function openMatchesModal() { document.getElementById('matchesModal').style.display = 'flex'; }
-        function closeMatchesModal() { document.getElementById('matchesModal').style.display = 'none'; }
-        function openChatModal() { document.getElementById('chatModal').style.display = 'flex'; }
-        function closeChatModal() { document.getElementById('chatModal').style.display = 'none'; }
-
-        function openFetcherModal() { document.getElementById('fetcherModal').style.display = 'flex'; }
-        function closeFetcherModal() { 
-            document.getElementById('fetcherModal').style.display = 'none'; 
-            document.getElementById('fetcherResults').innerHTML = ''; 
-            document.getElementById('fetcherUrl').value = '';
-        }
-
-        async function fetchIframes() {
-            let url = document.getElementById('fetcherUrl').value.trim();
-            if(!url) return showToast("حط رابط الصفحة الأول ❌");
-            
-            let resultsDiv = document.getElementById('fetcherResults');
-            let loadingDiv = document.getElementById('fetcherLoading');
-            
-            resultsDiv.innerHTML = '';
-            loadingDiv.style.display = 'block';
-            
-            const proxies = [
-                'https://api.allorigins.win/raw?url=',
-                'https://corsproxy.io/?',
-                'https://api.codetabs.com/v1/proxy?quest='
-            ];
-
-            let htmlText = null;
-            let success = false;
-
-            for (let proxy of proxies) {
-                try {
-                    let response = await fetch(proxy + encodeURIComponent(url));
-                    if (response.ok) {
-                        htmlText = await response.text();
-                        success = true;
-                        break; 
-                    }
-                } catch (e) {
-                    console.log("فشل مسار: " + proxy);
-                }
-            }
-            
-            if (!success || !htmlText) {
-                loadingDiv.style.display = 'none';
-                resultsDiv.innerHTML = '<p style="color: #ff4757; text-align: center; font-weight: bold;">الموقع محمي جداً، استخدم "الزرار الأخضر" (الطريقة التانية) اللي فوق واسحبه لشريط المتصفح ❌</p>';
-                return;
-            }
-
+    // ================= الحاسبة العلمية =================
+    let c_d = document.getElementById('disp');
+    function calc(v) {
+        if(v === 'c') { c_d.innerText = '0'; return; }
+        if(v === 'del') { c_d.innerText = c_d.innerText.length > 1 ? c_d.innerText.slice(0, -1) : '0'; return; }
+        if(v === '=') {
             try {
-                let parser = new DOMParser();
-                let doc = parser.parseFromString(htmlText, 'text/html');
-                let iframes = doc.querySelectorAll('iframe');
-                let foundLinks = [];
-                
-                iframes.forEach(ifr => {
-                    let src = ifr.getAttribute('src') || ifr.getAttribute('data-src');
-                    if(src && !src.includes('google') && !src.includes('ads') && !src.includes('taboola') && !src.includes('analytics')) {
-                        if(src.startsWith('//')) {
-                            src = 'https:' + src;
-                        } else if(src.startsWith('/')) {
-                            let urlObj = new URL(url);
-                            src = urlObj.origin + src;
-                        }
-                        if(!src.startsWith('http')) src = 'https://' + src; 
-                        foundLinks.push(src);
-                    }
-                });
+                let exp = c_d.innerText.replace(/sin\(/g, 'Math.sin(').replace(/cos\(/g, 'Math.cos(').replace(/tan\(/g, 'Math.tan(').replace(/√\(/g, 'Math.sqrt(').replace(/log\(/g, 'Math.log10(').replace(/π/g, 'Math.PI').replace(/\^/g, '**').replace(/×/g, '*').replace(/÷/g, '/');
+                c_d.innerText = Math.round(eval(exp) * 1e10) / 1e10; 
+            } catch(e) { c_d.innerText = 'Error'; }
+            return;
+        }
+        if(c_d.innerText === '0' || c_d.innerText === 'Error') {
+            if('^×÷+.)'.includes(v)) c_d.innerText += v; else c_d.innerText = v;
+        } else { c_d.innerText += v; }
+    }
 
-                loadingDiv.style.display = 'none';
-                foundLinks = [...new Set(foundLinks)];
+    // ================= الشطرنج ضد الكمبيوتر =================
+    const pieces={'r':'♜','n':'♞','b':'♝','q':'♛','k':'♚','p':'♟','R':'♖','N':'♘','B':'♗','Q':'♕','K':'♔','P':'♙'};
+    const pVals = {'p':1, 'n':3, 'b':3, 'r':5, 'q':9, 'k':100, '':0}; 
+    let c_bd=[['r','n','b','q','k','b','n','r'],['p','p','p','p','p','p','p','p'],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['P','P','P','P','P','P','P','P'],['R','N','B','Q','K','B','N','R']];
+    let c_sel=null, c_hints=[], turn='w';
 
-                if(foundLinks.length === 0) {
-                    resultsDiv.innerHTML = '<p style="color: #ff4757; text-align: center; font-weight: bold;">ملقيناش أي Iframes للسيرفرات جواه ❌</p>';
-                    return;
-                }
+    function resetChess() {
+        c_bd=[['r','n','b','q','k','b','n','r'],['p','p','p','p','p','p','p','p'],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['P','P','P','P','P','P','P','P'],['R','N','B','Q','K','B','N','R']];
+        c_sel=null; c_hints=[]; turn='w'; 
+        document.getElementById('chess-status').innerText = 'دورك يا بطل (الأبيض) ⚪';
+        initChess();
+    }
 
-                let htmlOut = `<p style="color: #2ecc71; text-align: center; font-weight: bold;">عاش! تم سحب ${foundLinks.length} سيرفر/رابط بنجاح ✅</p>`;
-                
-                foundLinks.forEach((link, idx) => {
-                    htmlOut += `
-                        <div style="background: #333; padding: 10px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #4caac9;">
-                            <input type="text" value="${link}" readonly style="width: 100%; margin-bottom: 8px; padding: 8px; border-radius: 4px; border: none; background: #222; color: #fff; font-size: 13px;" dir="ltr">
-                            <div style="display: flex; gap: 8px;">
-                                <button onclick="closeFetcherModal(); playVideo(null, '${link}')" style="flex: 1; background: #2ecc71; border: none; padding: 8px; border-radius: 4px; color: white; cursor: pointer; font-weight: bold;">تجربة في المشغل ▶️</button>
-                                <button onclick="navigator.clipboard.writeText('${link}'); showToast('تم النسخ 📋')" style="flex: 1; background: #f39c12; border: none; padding: 8px; border-radius: 4px; color: white; cursor: pointer; font-weight: bold;">نسخ الرابط 📋</button>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                resultsDiv.innerHTML = htmlOut;
-
-            } catch(e) {
-                loadingDiv.style.display = 'none';
-                resultsDiv.innerHTML = '<p style="color: #ff4757; text-align: center; font-weight: bold;">حصلت مشكلة في تحليل الروابط. ❌</p>';
-                console.error(e);
+    function initChess() {
+        const b=document.getElementById('chess-board'); b.innerHTML='';
+        for(let r=0;r<8;r++){
+            for(let c=0;c<8;c++){
+                let s=document.createElement('div');
+                s.className=`sq ${(r+c)%2==0?'w-sq':'b-sq'}`;
+                if(c_sel && c_sel.r===r && c_sel.c===c) s.classList.add('sel');
+                if(c_hints.some(h=>h.r===r && h.c===c)) s.classList.add('hint');
+                s.innerText=pieces[c_bd[r][c]]||'';
+                s.onclick=()=>clkSq(r,c);
+                b.appendChild(s);
             }
         }
+    }
 
-        function playNextServerManual() {
-            if (!currentPlayingElement) return showToast("شغل قناة الأول ❌");
-            let allChannels = Array.from(document.querySelectorAll('#main-list .tv-box, #main-list .match-btn'));
-            let currentIndex = allChannels.indexOf(currentPlayingElement);
-            if (currentIndex > -1 && currentIndex + 1 < allChannels.length) {
-                let nextCh = allChannels[currentIndex + 1];
-                let onclickStr = nextCh.getAttribute('onclick') || '';
-                let urlMatch = onclickStr.match(/['"](http.*?)['"]/);
-                if (urlMatch && urlMatch[1]) {
-                    showToast("⏭️ جاري النقل للسيرفر التالي...");
-                    playVideo(nextCh, urlMatch[1]);
+    function clkSq(r,c) {
+        if(turn !== 'w') return; 
+        if(c_hints.some(h=>h.r===r && h.c===c)) {
+            c_bd[r][c]=c_bd[c_sel.r][c_sel.c]; c_bd[c_sel.r][c_sel.c]='';
+            c_sel=null; c_hints=[]; turn = 'b'; initChess();
+            document.getElementById('chess-status').innerText = 'الكمبيوتر بيفكر... 🤖';
+            setTimeout(computerPlay, 600); 
+            return;
+        }
+        let p = c_bd[r][c];
+        if(p && p === p.toUpperCase()) { 
+            c_sel={r,c}; c_hints=getMoves(r,c); initChess();
+        } else { c_sel=null; c_hints=[]; initChess(); }
+    }
+
+    function computerPlay() {
+        let moves = [];
+        for(let r=0; r<8; r++) {
+            for(let c=0; c<8; c++) {
+                let p = c_bd[r][c];
+                if(p && p === p.toLowerCase()) { 
+                    let pMoves = getMoves(r,c);
+                    pMoves.forEach(tgt => moves.push({f: {r,c}, t: tgt}));
                 }
-            } else {
-                showToast("⛔ إنت في آخر سيرفر في القايمة");
             }
         }
-
-        function playPrevServerManual() {
-            if (!currentPlayingElement) return showToast("شغل قناة الأول ❌");
-            let allChannels = Array.from(document.querySelectorAll('#main-list .tv-box, #main-list .match-btn'));
-            let currentIndex = allChannels.indexOf(currentPlayingElement);
-            if (currentIndex > 0) {
-                let prevCh = allChannels[currentIndex - 1];
-                let onclickStr = prevCh.getAttribute('onclick') || '';
-                let urlMatch = onclickStr.match(/['"](http.*?)['"]/);
-                if (urlMatch && urlMatch[1]) {
-                    showToast("⏮️ جاري الرجوع للسيرفر السابق...");
-                    playVideo(prevCh, urlMatch[1]);
-                }
-            } else {
-                showToast("⛔ إنت في أول سيرفر في القايمة");
-            }
-        }
+        if(moves.length === 0) { document.getElementById('chess-status').innerText = 'كش مات! اللعبة خلصت. 🏁'; return; }
         
-        function toggleMainList() {
-            let mainList = document.getElementById("main-list");
-            let btn1 = document.getElementById("toggleListBtn");
-            let btn2 = document.getElementById("toggleListBtn2");
-            
-            if (mainList.style.getPropertyValue("display") === "none") {
-                mainList.style.removeProperty("display");
-                if (btn1) btn1.innerHTML = "👁️ إخفاء القنوات";
-                if (btn2) btn2.innerHTML = "👁️ إخفاء القنوات";
-                showToast("تم إظهار قائمة القنوات 🙉");
-            } else {
-                mainList.style.setProperty("display", "none", "important");
-                if (btn1) btn1.innerHTML = "👁️ إظهار القنوات";
-                if (btn2) btn2.innerHTML = "👁️ إظهار القنوات";
-                showToast("تم إخفاء قائمة القنوات 🙈");
-            }
-        }
-
-        // --- أكواد آلة سحب الـ IPTV ---
-        function openIptvModal() { document.getElementById('iptvModal').style.display = 'flex'; }
+        let bestScore = -1, bestMoves = [];
+        moves.forEach(m => {
+            let tgtPiece = c_bd[m.t.r][m.t.c];
+            let score = tgtPiece ? pVals[tgtPiece.toLowerCase()] : 0; 
+            if(score === 0) score = (m.t.r - m.f.r) * 0.1; 
+            if(score > bestScore) { bestScore = score; bestMoves = [m]; }
+            else if(score === bestScore) { bestMoves.push(m); }
+        });
         
-        function closeIptvModal() { 
-            document.getElementById('iptvModal').style.display = 'none'; 
-            document.getElementById('iptvUrlInput').value = '';
+        let chosen = bestMoves[Math.floor(Math.random() * bestMoves.length)];
+        c_bd[chosen.t.r][chosen.t.c] = c_bd[chosen.f.r][chosen.f.c]; c_bd[chosen.f.r][chosen.f.c] = '';
+        turn = 'w'; initChess();
+        document.getElementById('chess-status').innerText = 'دورك يا بطل (الأبيض) ⚪';
+    }
+
+    function getMoves(r,c) {
+        let m=[], p=c_bd[r][c]; if(!p) return m;
+        let isWhite = p === p.toUpperCase(); p = p.toLowerCase();
+        const isEnemy=(row,col)=>{ if(row<0||row>7||col<0||col>7||c_bd[row][col]==='') return false; return isWhite !== (c_bd[row][col]===c_bd[row][col].toUpperCase()); };
+        const isEmpty=(row,col)=>row>=0&&row<=7&&col>=0&&col<=7&&c_bd[row][col]==='';
+
+        if(p==='p') {
+            let dir=isWhite?-1:1;
+            if(isEmpty(r+dir,c)) m.push({r:r+dir, c});
+            if((isWhite&&r===6||!isWhite&&r===1)&&isEmpty(r+dir,c)&&isEmpty(r+2*dir,c)) m.push({r:r+2*dir, c});
+            if(isEnemy(r+dir,c-1)) m.push({r:r+dir, c:c-1});
+            if(isEnemy(r+dir,c+1)) m.push({r:r+dir, c:c+1});
         }
+        if(p==='r'||p==='q') { [[0,1],[0,-1],[1,0],[-1,0]].forEach(d=>{ for(let i=1;i<8;i++){ let nr=r+d[0]*i, nc=c+d[1]*i; if(isEmpty(nr,nc)){ m.push({r:nr,c:nc}); } else { if(isEnemy(nr,nc)) m.push({r:nr,c:nc}); break; } } }); }
+        if(p==='b'||p==='q') { [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(d=>{ for(let i=1;i<8;i++){ let nr=r+d[0]*i, nc=c+d[1]*i; if(isEmpty(nr,nc)){ m.push({r:nr,c:nc}); } else { if(isEnemy(nr,nc)) m.push({r:nr,c:nc}); break; } } }); }
+        if(p==='n') { [[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]].forEach(d=>{ let nr=r+d[0], nc=c+d[1]; if(isEmpty(nr,nc)||isEnemy(nr,nc)) m.push({r:nr,c:nc}); }); }
+        if(p==='k') { [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(d=>{ let nr=r+d[0], nc=c+d[1]; if(isEmpty(nr,nc)||isEnemy(nr,nc)) m.push({r:nr,c:nc}); }); }
+        return m;
+    }
+    initChess();
 
-        function fetchManualIPTV() {
-            let url = document.getElementById('iptvUrlInput').value.trim();
-            if(!url) { showToast("حط رابط الملف الأول ❌"); return; }
-            loadIPTVPlaylist(url);
-        }
+    // ================= BBTAN =================
+    const bCvs=document.getElementById('bbtan'), bCtx=bCvs.getContext('2d');
+    let balls=[], blocks=[], bLvl=1, bState=0, sX=150, isAim=false, aX, aY;
+    function initBB(){ clearInterval(window.bL); bLvl=1; blocks=[]; spawnB(); window.bL=setInterval(upBB,16); }
+    function spawnB(){ blocks.forEach(b=>b.y+=45); for(let i=0;i<6;i++)if(Math.random()>.4)blocks.push({x:i*50+2,y:50,w:46,h:46,hp:bLvl}); bLvl++; document.getElementById('bb-lvl').innerText=bLvl; }
+    bCvs.onmousedown=bCvs.ontouchstart=e=>{if(bState==0)isAim=true;};
+    bCvs.onmousemove=bCvs.ontouchmove=e=>{if(isAim){let r=bCvs.getBoundingClientRect(); aX=(e.touches?e.touches[0].clientX:e.clientX)-r.left; aY=(e.touches?e.touches[0].clientY:e.clientY)-r.top;}};
+    bCvs.onmouseup=bCvs.ontouchend=e=>{if(isAim){isAim=false; let dx=aX-sX,dy=aY-390,ang=Math.atan2(dy,dx); balls=[]; for(let i=0;i<bLvl;i++) balls.push({x:sX, y:390, vx:Math.cos(ang)*14, vy:Math.sin(ang)*14, act:true, w:i*2}); bState=1;}};
+    function upBB(){
+        if(bState==1){
+            let done=true; balls.forEach(b=>{
+                if(!b.act)return; if(b.w>0){b.w--;done=false;return;} b.x+=b.vx; b.y+=b.vy; done=false;
+                if(b.x<4||b.x>296)b.vx*=-1; if(b.y<4)b.vy*=-1; if(b.y>390){b.act=false; b.y=390;}
+                blocks.forEach(bl=>{ if(bl.hp>0&&b.x>bl.x&&b.x<bl.x+bl.w&&b.y>bl.y&&b.y<bl.y+bl.h){bl.hp--; b.vy*=-1;}});
+            });
+            blocks=blocks.filter(b=>b.hp>0); if(done){bState=0; spawnB();}
+        } 
+        bCtx.fillStyle='#222'; bCtx.fillRect(0,0,300,400); blocks.forEach(bl=>{bCtx.fillStyle='orange'; bCtx.fillRect(bl.x,bl.y,bl.w,bl.h); bCtx.fillStyle='white'; bCtx.font='16px Arial'; bCtx.fillText(bl.hp,bl.x+15,bl.y+25);});
+        bCtx.fillStyle='cyan'; balls.forEach(b=>{if(b.act&&b.w<=0){bCtx.beginPath();bCtx.arc(b.x,b.y,4,0,7);bCtx.fill();}}); if(bState==0){bCtx.beginPath();bCtx.arc(sX,390,5,0,7);bCtx.fill();}
+        if(isAim && bState==0){ bCtx.beginPath(); bCtx.moveTo(sX,390); bCtx.lineTo(aX,aY); bCtx.strokeStyle='rgba(255,255,255,0.5)'; bCtx.setLineDash([5,5]); bCtx.stroke(); bCtx.setLineDash([]); }
+    }
 
-        async function loadIPTVPlaylist(url) {
-            let loadingDiv = document.getElementById('iptvLoading');
-            if(loadingDiv) loadingDiv.style.display = 'block';
-            showToast("جاري سحب القنوات... ⏳");
+    // --- ثعبان و XO ---
+    let s_sn, s_fd, s_d, s_i; function startSnake(){ clearInterval(s_i); s_sn=[{x:10,y:10}]; s_fd={x:5,y:5}; s_d="R"; s_i=setInterval(dS,100); }
+    function dS(){ const c=document.getElementById('s-canv'), g=c.getContext('2d'); g.fillStyle="black"; g.fillRect(0,0,300,300); g.fillStyle="lime"; s_sn.forEach(p=>g.fillRect(p.x*10,p.y*10,9,9)); g.fillStyle="red"; g.fillRect(s_fd.x*10,s_fd.y*10,9,9); let h={x:s_sn[0].x,y:s_sn[0].y}; if(s_d=="R")h.x++; if(s_d=="L")h.x--; if(s_d=="U")h.y--; if(s_d=="D")h.y++; s_sn.unshift(h); if(h.x==s_fd.x&&h.y==s_fd.y)s_fd={x:Math.floor(Math.random()*30),y:Math.floor(Math.random()*30)}; else s_sn.pop(); if(h.x<0||h.x>=30||h.y<0||h.y>=30)clearInterval(s_i); }
+    window.onkeydown=e=>{if(e.key.includes("Arrow"))s_d=e.key[5].toUpperCase();};
 
-            const proxies = [
-                'https://api.allorigins.win/raw?url=',
-                'https://corsproxy.io/?',
-                'https://api.codetabs.com/v1/proxy?quest='
-            ];
+    let x_t='X', x_d=Array(9).fill(""); function resetXO(){ const b=document.getElementById('xo-board'); b.innerHTML=''; x_d.fill(""); for(let i=0;i<9;i++){let c=document.createElement('div');c.className='xo-c';c.onclick=()=>{if(!x_d[i]){x_d[i]=x_t;c.innerText=x_t;x_t=x_t=='X'?'O':'X';}};b.appendChild(c);}}
+    resetXO();
 
-            let m3uText = null;
-            for (let proxy of proxies) {
-                try {
-                    let res = await fetch(proxy + encodeURIComponent(url));
-                    if (res.ok) {
-                        m3uText = await res.text();
-                        break;
-                    }
-                } catch(e) { console.log("Proxy failed: " + proxy); }
-            }
+    let h_s=0; function hit(){h_s++;document.getElementById('score').innerText=h_s;}
+</script>
+<footer>
 
-            if(loadingDiv) loadingDiv.style.display = 'none';
+        <p style="font-size: 22px; font-weight: bold;">© 2027 _ 2026 ENG OMAR All Rights Reserved.</p>
 
-            if (!m3uText) {
-                showToast("فشل السحب، الرابط محمي أو مش شغال ❌");
-                return;
-            }
-
-            parseAndAddM3U(m3uText);
-            closeIptvModal();
-        }
-
-        function parseAndAddM3U(m3uText) {
-            let lines = m3uText.split('\n');
-            let container = document.getElementById('main-list');
-            let addedCount = 0;
-            let currentName = "قناة IPTV";
-            let currentLogo = "";
-
-            for (let i = 0; i < lines.length; i++) {
-                let line = lines[i].trim();
-                
-                if (line.startsWith('#EXTINF:')) {
-                    let commaIndex = line.lastIndexOf(',');
-                    if (commaIndex > -1) {
-                        currentName = line.substring(commaIndex + 1).trim();
-                    }
-                    let logoMatch = line.match(/tvg-logo="([^"]+)"/);
-                    if (logoMatch) currentLogo = logoMatch[1];
-                    else currentLogo = "";
-                } else if (line && !line.startsWith('#')) {
-                    let streamUrl = line;
-                    let html = '';
-                    if (currentLogo) {
-                        html = `<a href="javascript:void(0)" class="tv-box iptv-added" data-category="all" onclick="playVideo(this, '${streamUrl}')" style="background-image: url('${currentLogo}'); display: inline-flex; border-color: #9b59b6;" title="${currentName}"></a>`;
-                    } else {
-                        html = `<button onclick="playVideo(this, '${streamUrl}')" class="cat-btn match-btn iptv-added" data-category="all" style="display: inline-flex; border-color: #9b59b6; color: #9b59b6;" title="${currentName}">${currentName}</button>`;
-                    }
-                    container.insertAdjacentHTML('beforeend', html);
-                    addedCount++;
-                    currentName = "قناة IPTV";
-                    currentLogo = "";
-                }
-            }
-
-            injectFavStars();
-            initChannelsIndex();
-            
-            if (container.style.getPropertyValue("display") === "none") {
-                toggleMainList();
-            }
-            
-            showToast(`تم إضافة ${addedCount} قناة من الملف بنجاح ✅`);
-        }
-
-    </script>
-
-    <footer>
-        <p style="font-size: 22px; font-weight: bold;">© 2027 _ 2026 ENG OMAR TV. All Rights Reserved.</p>
         <p>اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى سَيِّدِنَا مُحَمَّدٍ ﷺ</p>
+
     </footer>
-
-
-
-
-
 </body></html>
