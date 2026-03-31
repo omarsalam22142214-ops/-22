@@ -3,153 +3,168 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أركيد الألعاب الاحترافي 🎮</title>
     <style>
-        :root { --p: #2c3e50; --a: #e67e22; --bg: #ecf0f1; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; text-align: center; user-select: none; }
+        /* المتغيرات للوضع الداكن (الافتراضي) والفاتح */
+        :root {
+            --bg: #0f141e; --box-bg: #1e272e; --text: #ecf0f1; --text-muted: #a4b0be;
+            --primary: #1e90ff; --danger: #ff4757; --success: #2ed573; --border: #2f3640;
+            --nav-bg: rgba(30, 39, 46, 0.9);
+        }
+        [data-theme="light"] {
+            --bg: #f1f2f6; --box-bg: #ffffff; --text: #2f3640; --text-muted: #576574;
+            --primary: #0984e3; --danger: #d63031; --success: #00b894; --border: #dfe6e9;
+            --nav-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text); margin: 0; text-align: center; user-select: none; transition: background 0.3s, color 0.3s; }
         
-        nav { background: var(--p); padding: 10px; display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; position: sticky; top: 0; z-index: 1000; }
-        nav button { background: #34495e; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 14px; transition: 0.2s; }
-        nav button:hover, nav button.active { background: var(--a); }
+        nav { background: var(--nav-bg); backdrop-filter: blur(10px); padding: 15px 5px; display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--border); }
+        nav button { background: var(--box-bg); color: var(--text); border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.2s; }
+        nav button:hover, nav button.active { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        #theme-btn { background: var(--text); color: var(--bg); border-radius: 50%; width: 35px; height: 35px; padding: 0; font-size: 18px; }
 
-        .section { display: none; padding: 20px; animation: f 0.3s; }
+        .section { display: none; padding: 20px; animation: fadeIn 0.4s; }
         .active { display: block; }
-        @keyframes f { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .box { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: inline-block; max-width: 95%; margin-bottom: 20px; }
-        button.main-btn { background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px; font-weight: bold; }
+        .box { background: var(--box-bg); padding: 20px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: inline-block; max-width: 95%; margin-bottom: 20px; border: 1px solid var(--border); transition: 0.3s; }
+        button.main-btn { background: var(--success); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px; font-weight: bold; font-size: 16px; }
 
-        /* شطرنج متطور */
-        .chess-grid { display: grid; grid-template-columns: repeat(8, 45px); grid-template-rows: repeat(8, 45px); border: 5px solid #333; margin: 10px auto; justify-content: center; }
-        .sq { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; }
+        /* شطرنج احترافي 3D */
+        .chess-grid { display: grid; grid-template-columns: repeat(8, 55px); grid-template-rows: repeat(8, 55px); border: 8px solid #222; margin: 15px auto; justify-content: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); border-radius: 6px; }
+        .sq { width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; font-size: 45px; cursor: pointer; position: relative; transition: 0.1s; font-family: Arial, sans-serif; }
         .w-sq { background: #eeeed2; } .b-sq { background: #769656; }
-        .sel { background: #f1c40f !important; } 
-        .hint { background: #d4ac0d !important; border: 2px solid #fff; box-sizing: border-box; } 
-        #chess-status { font-weight: bold; font-size: 18px; margin-top: 10px; color: var(--p); }
+        
+        .sq.white-piece { color: #fff; text-shadow: 0 2px 0 #000, 0 -2px 0 #000, 2px 0 0 #000, -2px 0 0 #000, 2px 3px 5px rgba(0,0,0,0.6); }
+        .sq.black-piece { color: #111; text-shadow: 0 1px 0 #ccc, 0 -1px 0 #ccc, 1px 0 0 #ccc, -1px 0 0 #ccc, 2px 3px 5px rgba(255,255,255,0.2); }
+        
+        .sq.sel::after { content: ''; position: absolute; inset: 0; background: rgba(241, 196, 15, 0.5); border: 3px solid #f1c40f; box-sizing: border-box; }
+        .sq.hint::after { content: ''; position: absolute; width: 30%; height: 30%; background: rgba(0,0,0,0.3); border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+        .b-sq.hint::after { background: rgba(255,255,255,0.4); }
+        
+        #chess-status { font-weight: bold; font-size: 20px; margin-top: 15px; color: var(--primary); background: var(--bg); padding: 10px 20px; border-radius: 8px; display: inline-block; border: 1px solid var(--border); }
 
-        /* باقي الألعاب */
-        #bbtan { background: #222; display: block; margin: 10px auto; border-radius: 10px; cursor: crosshair; touch-action: none; }
-        #s-canv { background: #000; display: block; margin: 10px auto; border: 3px solid #333; }
-        .xo-g { display: grid; grid-template-columns: repeat(3, 80px); gap: 5px; justify-content: center; margin: 10px; }
-        .xo-c { width: 80px; height: 80px; background: #bdc3c7; display: flex; align-items: center; justify-content: center; font-size: 40px; cursor: pointer; border-radius: 10px; }
+        /* XO */
+        .xo-g { display: grid; grid-template-columns: repeat(3, 80px); gap: 5px; justify-content: center; margin: 20px auto; }
+        .xo-c { width: 80px; height: 80px; background: var(--bg); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 50px; cursor: pointer; border-radius: 10px; font-weight: bold; color: var(--text); }
 
-        /* ستايل الحاسبة العلمية */
-        .sci-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: auto; max-width: 350px; direction: ltr; }
-        .sci-grid button { padding: 15px 5px; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: #dfe6e9; color: #2d3436; transition: 0.2s; }
-        .sci-grid button:hover { opacity: 0.8; }
-        .sci-grid button.op { background: #0984e3; color: white; font-size: 20px; }
-        .sci-grid button.act { background: #d63031; color: white; }
-        .sci-grid button.sci { background: #b2bec3; }
-        .sci-grid button.eq { background: #00b894; color: white; grid-row: span 2; font-size: 20px; }
+        /* كانفاس الألعاب */
+        canvas { display: block; margin: 10px auto; border-radius: 10px; border: 2px solid var(--border); background: #111; touch-action: none; }
+
+        /* الحاسبة العلمية */
+        .calc-wrapper { max-width: 400px; margin: auto; }
+        #disp { background: var(--bg); color: var(--success); padding: 15px; font-size: 24px; text-align: left; border-radius: 8px; margin-bottom: 10px; word-wrap: break-word; direction: ltr; min-height: 35px; border: 1px solid var(--border); font-family: monospace; }
+        .sci-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; direction: ltr; }
+        .sci-grid button { padding: 12px 2px; font-size: 15px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+        .sci-grid button.op { background: var(--primary); color: white; }
+        .sci-grid button.act { background: var(--danger); color: white; }
+        .sci-grid button.eq { background: var(--success); color: white; grid-row: span 2; }
         .sci-grid button.zero { grid-column: span 2; }
+        .sci-panel { display: none; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 5px; margin-bottom: 5px; }
+        .sci-panel.show { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+
+        /* الأذكار */
+        .azkar-list { text-align: right; background: var(--bg); padding: 15px; border-radius: 10px; border: 1px solid var(--border); height: 250px; overflow-y: auto; line-height: 1.8; }
+        .azkar-list h3 { color: var(--primary); margin-top: 0; }
+        .azkar-list p { margin-bottom: 15px; border-bottom: 1px dashed var(--border); padding-bottom: 10px; }
     </style>
 </head>
 <body>
 
 <nav>
     <button onclick="nav('h', this)" class="active">🏠</button>
-    <button onclick="nav('az', this)" class="">📿 أذكار</button>
-    <button onclick="nav('ch', this)" class="">♟️ شطرنج</button>
+    <button onclick="nav('ch', this)" class="">♟️ شطرنج AI</button>
     <button onclick="nav('bb', this)" class="">🔵 BBTAN</button>
+    <button onclick="nav('ca', this)" class="">🧮 حاسبة علمية</button>
+    <button onclick="nav('az', this)" class="">📿 أذكار</button>
+    <button onclick="nav('xo', this)" class="">❌ XO (AI)</button>
     <button onclick="nav('sn', this)" class="">🐍 ثعبان</button>
-    <button onclick="nav('xo', this)" class="">❌ XO</button>
-    <button onclick="nav('ca', this)" class="">🧮 حاسبة</button>
     <button onclick="nav('cl', this)" class="">⚡ ضغط</button>
-    <button onclick="window.open('https://omarsalam22142214-ops.github.io/ASKME17')" class="cat-btn match-btn" style="display: inline-flex;"><font _mstmutation="1" style="direction: rtl;">  تحديات </font><div class="fav-icon-star" title="المفضلة">★</div></button><button onclick="nav('no', this)" class="">📝 مفكرة</button>
+    <button id="theme-btn" onclick="toggleTheme()">☀️</button>
 </nav>
 
 <div id="h" class="section active">
-    <h1>أهلاً بيك يا بطل 🚀</h1>
-    <p></p>
-</div>
-
-<div id="az" class="section">
-    <div class="box">
-        <h2>أذكار المسلم 📿</h2>
-        <div style="background:#2d3436; color:#55efc4; padding:20px; border-radius:10px; margin-bottom:15px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);">
-            <h1 id="sibha-count" style="font-size:60px; margin:0;">0</h1>
-            <p id="sibha-text" style="font-size:24px; margin:10px 0 0; color:#fff;">سبحان الله</p>
-        </div>
-        <button class="main-btn" onclick="hitSibha()" style="padding:20px 40px; font-size:24px; border-radius:50%; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">سبّح</button>
-        <button class="main-btn" onclick="resetSibha()" style="background:#d63031;">تصفير</button>
-
-        <div style="text-align:right; margin-top:20px; border-top:2px solid #eee; padding-top:15px; background: #f9f9f9; padding: 15px; border-radius: 10px;">
-            <h3 style="color:var(--p); margin-top:0;">أذكار سريعة:</h3>
-            <ul style="list-style:none; padding:0; line-height:2; font-size: 16px; color:#333;">
-                <li>🔸 <b>سيد الاستغفار:</b> اللهم أنت ربي لا إله إلا أنت، خلقتني وأنا عبدك، وأنا على عهدك ووعدك ما استطعت...</li>
-                <li>🔸 سبحان الله وبحمده، سبحان الله العظيم (كلمتان خفيفتان على اللسان، ثقيلتان في الميزان).</li>
-                <li>🔸 لا حول ولا قوة إلا بالله (كنز من كنوز الجنة).</li>
-                <li>🔸 أستغفر الله العظيم الذي لا إله إلا هو الحي القيوم وأتوب إليه.</li>
-                <li>🔸 اللهم صلّ وسلم وبارك على نبينا محمد.</li>
-            </ul>
-        </div>
-    </div>
+    <h1>أركيد المحترفين 🚀</h1>
+    <p style="color:var(--text-muted);"></p>
 </div>
 
 <div id="ch" class="section">
     <div class="box">
-        <h2>شطرنج ضد الكمبيوتر 🤖</h2>
-        <div id="chess-board" class="chess-grid"><div class="sq w-sq">♜</div><div class="sq b-sq">♞</div><div class="sq w-sq">♝</div><div class="sq b-sq">♛</div><div class="sq w-sq">♚</div><div class="sq b-sq">♝</div><div class="sq w-sq">♞</div><div class="sq b-sq">♜</div><div class="sq b-sq">♟</div><div class="sq w-sq">♟</div><div class="sq b-sq">♟</div><div class="sq w-sq">♟</div><div class="sq b-sq">♟</div><div class="sq w-sq">♟</div><div class="sq b-sq">♟</div><div class="sq w-sq">♟</div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq w-sq">♙</div><div class="sq b-sq">♙</div><div class="sq w-sq">♙</div><div class="sq b-sq">♙</div><div class="sq w-sq">♙</div><div class="sq b-sq">♙</div><div class="sq w-sq">♙</div><div class="sq b-sq">♙</div><div class="sq b-sq">♖</div><div class="sq w-sq">♘</div><div class="sq b-sq">♗</div><div class="sq w-sq">♕</div><div class="sq b-sq">♔</div><div class="sq w-sq">♗</div><div class="sq b-sq">♘</div><div class="sq w-sq">♖</div></div>
-        <div id="chess-status">دورك يا بطل (الأبيض) ⚪</div>
+        <h2>شطرنج المحترفين 🤖🧠</h2>
+        <div id="chess-board" class="chess-grid"><div class="sq w-sq black-piece">♜</div><div class="sq b-sq black-piece">♞</div><div class="sq w-sq black-piece">♝</div><div class="sq b-sq black-piece">♛</div><div class="sq w-sq black-piece">♚</div><div class="sq b-sq black-piece">♝</div><div class="sq w-sq black-piece">♞</div><div class="sq b-sq black-piece">♜</div><div class="sq b-sq black-piece">♟</div><div class="sq w-sq black-piece">♟</div><div class="sq b-sq black-piece">♟</div><div class="sq w-sq black-piece">♟</div><div class="sq b-sq black-piece">♟</div><div class="sq w-sq black-piece">♟</div><div class="sq b-sq black-piece">♟</div><div class="sq w-sq black-piece">♟</div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq w-sq white-piece">♙</div><div class="sq b-sq white-piece">♙</div><div class="sq w-sq white-piece">♙</div><div class="sq b-sq white-piece">♙</div><div class="sq w-sq white-piece">♙</div><div class="sq b-sq white-piece">♙</div><div class="sq w-sq white-piece">♙</div><div class="sq b-sq white-piece">♙</div><div class="sq b-sq white-piece">♖</div><div class="sq w-sq white-piece">♘</div><div class="sq b-sq white-piece">♗</div><div class="sq w-sq white-piece">♕</div><div class="sq b-sq white-piece">♔</div><div class="sq w-sq white-piece">♗</div><div class="sq b-sq white-piece">♘</div><div class="sq w-sq white-piece">♖</div></div>
+        <div id="chess-status">دورك يا بطل (الأبيض) ⚪</div><br>
         <button class="main-btn" onclick="resetChess()">لعبة جديدة</button>
+    </div>
+</div>
+
+<div id="ca" class="section">
+    <div class="box calc-wrapper">
+        <h2>آلة حاسبة علمية 🧮</h2>
+        <div id="disp">0</div>
+        <button class="main-btn" style="width:100%; margin: 0 0 10px 0; background:var(--border); color:var(--text);" onclick="toggleSci()">إظهار/إخفاء الدوال العلمية 🔽</button>
+        
+        <div id="sci-panel" class="sci-panel">
+            <button onclick="calc('π')">π</button><button onclick="calc('e')">e</button><button onclick="calc('φ')">φ</button><button onclick="calc('log(')">log</button><button onclick="calc('ln(')">ln</button>
+            <button onclick="calc('log2(')">log₂</button><button onclick="calc('√(')">√</button><button onclick="calc('∛(')">∛</button><button onclick="calc('abs(')">|x|</button><button onclick="calc('^')">^</button>
+            <button onclick="calc('sin(')">sin</button><button onclick="calc('cos(')">cos</button><button onclick="calc('tan(')">tan</button><button onclick="calc('sin⁻¹(')">sin⁻¹</button><button onclick="calc('cos⁻¹(')">cos⁻¹</button>
+            <button onclick="calc('tan⁻¹(')">tan⁻¹</button><button onclick="calc('sinh(')">sinh</button><button onclick="calc('cosh(')">cosh</button><button onclick="calc('tanh(')">tanh</button><button onclick="calc('(')">(</button>
+            <button onclick="calc('sinh⁻¹(')">sinh⁻¹</button><button onclick="calc('cosh⁻¹(')">cosh⁻¹</button><button onclick="calc('tanh⁻¹(')">tanh⁻¹</button><button onclick="calc(')')">)</button><button class="act" onclick="calc('c')">C</button>
+        </div>
+
+        <div class="sci-grid">
+            <button onclick="calc('7')">7</button><button onclick="calc('8')">8</button><button onclick="calc('9')">9</button><button class="act" onclick="calc('del')">DEL</button><button class="act" onclick="calc('c')">AC</button>
+            <button onclick="calc('4')">4</button><button onclick="calc('5')">5</button><button onclick="calc('6')">6</button><button class="op" onclick="calc('×')">×</button><button class="op" onclick="calc('÷')">÷</button>
+            <button onclick="calc('1')">1</button><button onclick="calc('2')">2</button><button onclick="calc('3')">3</button><button class="op" onclick="calc('+')">+</button><button class="op" onclick="calc('-')">-</button>
+            <button class="zero" onclick="calc('0')">0</button><button onclick="calc('.')">.</button><button class="eq" onclick="calc('=')">=</button>
+        </div>
+    </div>
+</div>
+
+<div id="xo" class="section">
+    <div class="box">
+        <h2>X-O (ضد الكمبيوتر) 🤖</h2>
+        <div id="xo-status" style="font-size:20px; font-weight:bold; color:var(--primary);">دورك (X)</div>
+        <div id="xo-board" class="xo-g"><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div></div>
+        <button class="main-btn" onclick="resetXO()">إعادة اللعب</button>
+    </div>
+</div>
+
+<div id="az" class="section">
+    <div class="box" style="width: 90%; max-width: 500px;">
+        <h2>أذكار المسلم 📿</h2>
+        <div style="background:var(--bg); padding:20px; border-radius:10px; margin-bottom:15px; border:1px solid var(--border);">
+            <h1 id="sibha-count" style="font-size:50px; margin:0; color:var(--success);">0</h1>
+            <p id="sibha-text" style="font-size:20px; margin:5px 0 0;">سبحان الله</p>
+        </div>
+        <button class="main-btn" onclick="hitSibha()" style="width:100px; height:100px; border-radius:50%; font-size:22px;">سبّح</button>
+        <button class="main-btn" style="background:var(--danger);" onclick="resetSibha()">تصفير</button>
+        
+        <div class="azkar-list">
+            <h3>أذكار الصباح والمساء</h3>
+            <p>أَعُوذُ بِاللهِ مِنْ الشَّيْطَانِ الرَّجِيمِ: اللّهُ لاَ إِلَـهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ...</p>
+            <p>بِسْمِ اللهِ الرَّحْمنِ الرَّحِيمِ: قُلْ هُوَ ٱللَّهُ أَحَدٌ، ٱللَّهُ ٱلصَّمَدُ، لَمْ يَلِدْ وَلَمْ يُولَدْ، وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ. (3 مرات)</p>
+            <p>أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ لا إِلَهَ إِلا اللَّهُ، وَحْدَهُ لا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.</p>
+            <p>اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلا أَنْتَ ، خَلَقْتَنِي وَأَنَا عَبْدُكَ ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ.</p>
+            <p>بِسـمِ اللهِ الذي لا يَضُـرُّ مَعَ اسمِـهِ شَيءٌ في الأرْضِ وَلا في السّمـاءِ وَهـوَ السّمـيعُ العَلـيم. (3 مرات)</p>
+            <p>رَضيـتُ بِاللهِ رَبَّـاً وَبِالإسْلامِ ديـناً وَبِمُحَـمَّدٍ صلى الله عليه وسلم نَبِيّـاً. (3 مرات)</p>
+        </div>
     </div>
 </div>
 
 <div id="bb" class="section">
     <div class="box">
         <h2>BBTAN 🔵</h2>
-        <p>المستوى: <span id="bb-lvl" style="color:var(--a); font-weight:bold; font-size:20px;">1</span></p>
+        <p>المستوى: <span id="bb-lvl" style="color:var(--danger); font-weight:bold; font-size:20px;">1</span></p>
         <canvas id="bbtan" width="300" height="400"></canvas>
-        <button class="main-btn" onclick="initBB()">ابدأ</button>
+        <button class="main-btn" onclick="initBB()">بدأ اللعبة</button>
     </div>
 </div>
 
-<div id="ca" class="section">
-    <div class="box">
-        <h2>آلة حاسبة علمية 🧮</h2>
-        <div id="disp" style="background:#2d3436;color:#55efc4;padding:15px;text-align:left;font-size:24px;border-radius:5px;margin-bottom:10px;word-wrap:break-word;direction:ltr;min-height:35px;">0</div>
-        <div class="sci-grid">
-            <button class="sci" onclick="calc('sin(')">sin</button>
-            <button class="sci" onclick="calc('cos(')">cos</button>
-            <button class="sci" onclick="calc('tan(')">tan</button>
-            <button class="sci" onclick="calc('(')">(</button>
-            <button class="sci" onclick="calc(')')">)</button>
-
-            <button class="sci" onclick="calc('√(')">√</button>
-            <button class="sci" onclick="calc('^')">^</button>
-            <button class="sci" onclick="calc('π')">π</button>
-            <button class="act" onclick="calc('del')">DEL</button>
-            <button class="act" onclick="calc('c')">C</button>
-
-            <button onclick="calc('7')">7</button>
-            <button onclick="calc('8')">8</button>
-            <button onclick="calc('9')">9</button>
-            <button class="op" onclick="calc('÷')">÷</button>
-            <button class="sci" onclick="calc('log(')">log</button>
-
-            <button onclick="calc('4')">4</button>
-            <button onclick="calc('5')">5</button>
-            <button onclick="calc('6')">6</button>
-            <button class="op" onclick="calc('×')">×</button>
-            <button class="sci" onclick="calc('.')">.</button>
-
-            <button onclick="calc('1')">1</button>
-            <button onclick="calc('2')">2</button>
-            <button onclick="calc('3')">3</button>
-            <button class="op" onclick="calc('-')">-</button>
-            <button class="eq" onclick="calc('=')">=</button>
-
-            <button class="zero" onclick="calc('0')">0</button>
-            <button onclick="calc('00')">00</button>
-            <button class="op" onclick="calc('+')">+</button>
-        </div>
-    </div>
-</div>
-
-<div id="sn" class="section"><div class="box"><h2>الثعبان</h2><canvas id="s-canv" width="300" height="300"></canvas><button class="main-btn" onclick="startSnake()">ابدأ</button></div></div>
-<div id="xo" class="section"><div class="box"><h2>XO</h2><div id="xo-board" class="xo-g"><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div></div><button class="main-btn" onclick="resetXO()">إعادة</button></div></div>
-<div id="cl" class="section"><div class="box"><h2>الضغط</h2><h1 id="score">0</h1><button class="main-btn" onclick="hit()">اضغط!</button></div></div>
-<div id="no" class="section"><div class="box" style="width:80%"><textarea style="width:100%;height:150px;" placeholder="اكتب ملاحظاتك هنا..."></textarea></div></div>
+<div id="sn" class="section"><div class="box"><h2>الثعبان 🐍</h2><p>النقاط: <span id="sn-score">0</span></p><canvas id="s-canv" width="300" height="300"></canvas><button class="main-btn" onclick="startSnake()">ابدأ</button></div></div>
+<div id="cl" class="section"><div class="box"><h2>الضغط</h2><h1 id="score">0</h1><button class="main-btn" onclick="hit()" style="padding:40px; border-radius:50%; font-size:24px;">اضغط!</button></div></div>
 
 <script>
+    // --- التنقل ---
     function nav(id, btn) {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
@@ -157,66 +172,88 @@
         btn.classList.add('active');
     }
 
-    // ================= السبحة الإلكترونية =================
-    let s_count = 0;
-    let zekr_list = ['سبحان الله', 'الحمد لله', 'الله أكبر', 'لا إله إلا الله', 'لا حول ولا قوة إلا بالله', 'أستغفر الله'];
-    let z_idx = 0;
-    
-    function hitSibha() {
-        s_count++;
-        document.getElementById('sibha-count').innerText = s_count;
-        // تغيير الذكر كل 33 مرة
-        if(s_count > 0 && s_count % 33 === 0) {
-            z_idx = (z_idx + 1) % zekr_list.length;
-            document.getElementById('sibha-text').innerText = zekr_list[z_idx];
-        }
-    }
-    
-    function resetSibha() {
-        s_count = 0; z_idx = 0;
-        document.getElementById('sibha-count').innerText = s_count;
-        document.getElementById('sibha-text').innerText = zekr_list[z_idx];
+    // --- الوضع الداكن/الفاتح ---
+    function toggleTheme() {
+        let body = document.body;
+        let btn = document.getElementById('theme-btn');
+        if (body.getAttribute('data-theme') === 'light') { body.removeAttribute('data-theme'); btn.innerText = '☀️'; } 
+        else { body.setAttribute('data-theme', 'light'); btn.innerText = '🌙'; }
     }
 
-    // ================= الحاسبة العلمية =================
+    // --- الآلة الحاسبة ---
     let c_d = document.getElementById('disp');
+    function toggleSci() { document.getElementById('sci-panel').classList.toggle('show'); }
     function calc(v) {
         if(v === 'c') { c_d.innerText = '0'; return; }
         if(v === 'del') { c_d.innerText = c_d.innerText.length > 1 ? c_d.innerText.slice(0, -1) : '0'; return; }
         if(v === '=') {
             try {
-                let exp = c_d.innerText.replace(/sin\(/g, 'Math.sin(').replace(/cos\(/g, 'Math.cos(').replace(/tan\(/g, 'Math.tan(').replace(/√\(/g, 'Math.sqrt(').replace(/log\(/g, 'Math.log10(').replace(/π/g, 'Math.PI').replace(/\^/g, '**').replace(/×/g, '*').replace(/÷/g, '/');
+                let exp = c_d.innerText.replace(/π/g, 'Math.PI').replace(/e/g, 'Math.E').replace(/φ/g, '1.61803398875').replace(/log₂\(/g, 'Math.log2(').replace(/log\(/g, 'Math.log10(').replace(/ln\(/g, 'Math.log(').replace(/sin⁻¹\(/g, 'Math.asin(').replace(/cos⁻¹\(/g, 'Math.acos(').replace(/tan⁻¹\(/g, 'Math.atan(').replace(/sinh⁻¹\(/g, 'Math.asinh(').replace(/cosh⁻¹\(/g, 'Math.acosh(').replace(/tanh⁻¹\(/g, 'Math.atanh(').replace(/sinh\(/g, 'Math.sinh(').replace(/cosh\(/g, 'Math.cosh(').replace(/tanh\(/g, 'Math.tanh(').replace(/sin\(/g, 'Math.sin(').replace(/cos\(/g, 'Math.cos(').replace(/tan\(/g, 'Math.tan(').replace(/√\(/g, 'Math.sqrt(').replace(/∛\(/g, 'Math.cbrt(').replace(/abs\(/g, 'Math.abs(').replace(/\^/g, '**').replace(/×/g, '*').replace(/÷/g, '/');
                 c_d.innerText = Math.round(eval(exp) * 1e10) / 1e10; 
-            } catch(e) { c_d.innerText = 'Error'; }
-            return;
+            } catch(e) { c_d.innerText = 'Error'; } return;
         }
-        if(c_d.innerText === '0' || c_d.innerText === 'Error') {
-            if('^×÷+.)'.includes(v)) c_d.innerText += v; else c_d.innerText = v;
-        } else { c_d.innerText += v; }
+        if(c_d.innerText === '0' || c_d.innerText === 'Error') { if('^×÷+.)'.includes(v)) c_d.innerText += v; else c_d.innerText = v; } else { c_d.innerText += v; }
     }
 
-    // ================= الشطرنج ضد الكمبيوتر =================
+    // --- السبحة ---
+    let s_count=0, z_idx=0, z_list=['سبحان الله','الحمد لله','الله أكبر','لا إله إلا الله','لا حول ولا قوة إلا بالله','أستغفر الله']; 
+    function hitSibha() { s_count++; document.getElementById('sibha-count').innerText=s_count; if(s_count>0 && s_count%33===0){ z_idx=(z_idx+1)%z_list.length; document.getElementById('sibha-text').innerText=z_list[z_idx]; } } 
+    function resetSibha() { s_count=0; z_idx=0; document.getElementById('sibha-count').innerText=s_count; document.getElementById('sibha-text').innerText=z_list[z_idx]; }
+
+    // --- XO ضد الكمبيوتر ---
+    let xo_bd = Array(9).fill(null), xo_turn = 'X', xo_active = true;
+    function resetXO() { xo_bd.fill(null); xo_turn = 'X'; xo_active = true; document.getElementById('xo-status').innerText = 'دورك (X)'; const b = document.getElementById('xo-board'); b.innerHTML = ''; for(let i=0; i<9; i++) { let c = document.createElement('div'); c.className = 'xo-c'; c.onclick = () => playerMoveXO(i, c); b.appendChild(c); } }
+    function checkWinXO(board) { const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; for(let l of lines) { if(board[l[0]] && board[l[0]] === board[l[1]] && board[l[0]] === board[l[2]]) return board[l[0]]; } if(!board.includes(null)) return 'Tie'; return null; }
+    function playerMoveXO(i, el) { if(!xo_active || xo_bd[i]) return; xo_bd[i] = 'X'; el.innerText = 'X'; el.style.color = 'var(--danger)'; let w = checkWinXO(xo_bd); if(w) { endGameXO(w); return; } xo_turn = 'O'; document.getElementById('xo-status').innerText = 'الكمبيوتر بيفكر...'; xo_active = false; setTimeout(aiMoveXO, 400); }
+    function aiMoveXO() { let bestMove = -1; for(let i=0; i<9; i++) { if(!xo_bd[i]) { xo_bd[i] = 'O'; if(checkWinXO(xo_bd) === 'O') bestMove = i; xo_bd[i] = null; } } if(bestMove === -1) { for(let i=0; i<9; i++) { if(!xo_bd[i]) { xo_bd[i] = 'X'; if(checkWinXO(xo_bd) === 'X') bestMove = i; xo_bd[i] = null; } } } if(bestMove === -1) { let empty = []; xo_bd.forEach((v,i) => {if(!v) empty.push(i)}); bestMove = empty[Math.floor(Math.random()*empty.length)]; } if(bestMove !== -1) { xo_bd[bestMove] = 'O'; let el = document.getElementById('xo-board').children[bestMove]; el.innerText = 'O'; el.style.color = 'var(--primary)'; } let w = checkWinXO(xo_bd); if(w) { endGameXO(w); return; } xo_turn = 'X'; document.getElementById('xo-status').innerText = 'دورك (X)'; xo_active = true; }
+    function endGameXO(winner) { xo_active = false; if(winner === 'Tie') document.getElementById('xo-status').innerText = 'تعادل!'; else if(winner === 'X') document.getElementById('xo-status').innerText = 'أنت كسبت! 🎉'; else document.getElementById('xo-status').innerText = 'الكمبيوتر كسب! 🤖'; }
+    resetXO();
+
+    // --- BBTAN ---
+    const bCvs=document.getElementById('bbtan'), bCtx=bCvs.getContext('2d'); let balls=[], blocks=[], bLvl=1, bState=0, sX=150, isAim=false, aX, aY;
+    function initBB(){ clearInterval(window.bL); bLvl=1; blocks=[]; spawnB(); window.bL=setInterval(upBB,16); }
+    function spawnB(){ blocks.forEach(b=>b.y+=45); for(let i=0;i<6;i++)if(Math.random()>.5)blocks.push({x:i*50+2,y:50,w:46,h:46,hp:bLvl}); bLvl++; document.getElementById('bb-lvl').innerText=bLvl; }
+    bCvs.onmousedown=bCvs.ontouchstart=e=>{if(bState==0)isAim=true;}; bCvs.onmousemove=bCvs.ontouchmove=e=>{if(isAim){let r=bCvs.getBoundingClientRect(); aX=(e.touches?e.touches[0].clientX:e.clientX)-r.left; aY=(e.touches?e.touches[0].clientY:e.clientY)-r.top;}};
+    bCvs.onmouseup=bCvs.ontouchend=e=>{if(isAim){isAim=false; let dx=aX-sX,dy=aY-390,ang=Math.atan2(dy,dx); if(dy>-10)ang=-Math.PI/2; balls=[]; for(let i=0;i<bLvl;i++) balls.push({x:sX, y:390, vx:Math.cos(ang)*12, vy:Math.sin(ang)*12, act:true, w:i*3}); bState=1;}};
+    function upBB(){
+        if(bState==1){ 
+            let done=true; balls.forEach(b=>{ if(!b.act)return; if(b.w>0){b.w--;done=false;return;} b.x+=b.vx; b.y+=b.vy; done=false; if(b.x<4){b.x=4; b.vx*=-1;} else if(b.x>296){b.x=296; b.vx*=-1;} if(b.y<4){b.y=4; b.vy*=-1;} if(b.y>390){b.act=false; b.y=390;} 
+            blocks.forEach(bl=>{ if(bl.hp>0 && b.x>bl.x && b.x<bl.x+bl.w && b.y>bl.y && b.y<bl.y+bl.h){ bl.hp--; b.x -= b.vx; b.y -= b.vy; if(Math.abs(b.vx) > Math.abs(b.vy)) b.vx*=-1; else b.vy*=-1; } }); }); blocks=blocks.filter(b=>b.hp>0); if(done){bState=0; sX=balls[0]?balls[0].x:150; spawnB(); if(blocks.some(bl=>bl.y>=350)){alert('جيم أوفر!'); initBB();}} 
+        } 
+        bCtx.fillStyle='#111'; bCtx.fillRect(0,0,300,400); blocks.forEach(bl=>{bCtx.fillStyle='#e67e22'; bCtx.fillRect(bl.x,bl.y,bl.w,bl.h); bCtx.fillStyle='#fff'; bCtx.font='16px Arial'; bCtx.textAlign='center'; bCtx.fillText(bl.hp,bl.x+23,bl.y+28);});
+        bCtx.fillStyle='#1e90ff'; balls.forEach(b=>{if(b.act&&b.w<=0){bCtx.beginPath();bCtx.arc(b.x,b.y,4,0,7);bCtx.fill();}}); if(bState==0){bCtx.beginPath();bCtx.arc(sX,390,5,0,7);bCtx.fill();}
+        if(isAim && bState==0){ bCtx.beginPath(); bCtx.moveTo(sX,390); bCtx.lineTo(aX,aY); bCtx.strokeStyle='rgba(255,255,255,0.5)'; bCtx.setLineDash([5,5]); bCtx.stroke(); bCtx.setLineDash([]); }
+    }
+
+    // --- الثعبان ---
+    let s_sn, s_fd, s_d, s_i, sc=0; function startSnake(){ clearInterval(s_i); s_sn=[{x:10,y:10}]; s_fd={x:5,y:5}; s_d="R"; sc=0; document.getElementById('sn-score').innerText=sc; s_i=setInterval(dS,100); }
+    function dS(){ const c=document.getElementById('s-canv'), g=c.getContext('2d'); g.fillStyle="#111"; g.fillRect(0,0,300,300); g.fillStyle="#2ed573"; s_sn.forEach(p=>g.fillRect(p.x*15,p.y*15,14,14)); g.fillStyle="#ff4757"; g.fillRect(s_fd.x*15,s_fd.y*15,14,14); let h={x:s_sn[0].x,y:s_sn[0].y}; if(s_d=="R")h.x++; if(s_d=="L")h.x--; if(s_d=="U")h.y--; if(s_d=="D")h.y++; s_sn.unshift(h); if(h.x==s_fd.x&&h.y==s_fd.y){sc+=10; document.getElementById('sn-score').innerText=sc; s_fd={x:Math.floor(Math.random()*20),y:Math.floor(Math.random()*20)};} else s_sn.pop(); if(h.x<0||h.x>=20||h.y<0||h.y>=20)clearInterval(s_i); }
+    window.onkeydown=e=>{if(e.key==="ArrowRight"&&s_d!="L")s_d="R"; if(e.key==="ArrowLeft"&&s_d!="R")s_d="L"; if(e.key==="ArrowUp"&&s_d!="D")s_d="U"; if(e.key==="ArrowDown"&&s_d!="U")s_d="D";};
+
+    let h_s=0; function hit(){h_s++;document.getElementById('score').innerText=h_s;}
+
+    // ================= الشطرنج الاحترافي (Minimax AI Depth 3) =================
     const pieces={'r':'♜','n':'♞','b':'♝','q':'♛','k':'♚','p':'♟','R':'♖','N':'♘','B':'♗','Q':'♕','K':'♔','P':'♙'};
-    const pVals = {'p':1, 'n':3, 'b':3, 'r':5, 'q':9, 'k':100, '':0}; 
+    const pVals = {'p':10, 'n':30, 'b':30, 'r':50, 'q':90, 'k':9000}; 
     let c_bd=[['r','n','b','q','k','b','n','r'],['p','p','p','p','p','p','p','p'],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['P','P','P','P','P','P','P','P'],['R','N','B','Q','K','B','N','R']];
     let c_sel=null, c_hints=[], turn='w';
 
-    function resetChess() {
-        c_bd=[['r','n','b','q','k','b','n','r'],['p','p','p','p','p','p','p','p'],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['P','P','P','P','P','P','P','P'],['R','N','B','Q','K','B','N','R']];
-        c_sel=null; c_hints=[]; turn='w'; 
-        document.getElementById('chess-status').innerText = 'دورك يا بطل (الأبيض) ⚪';
-        initChess();
-    }
+    function resetChess() { c_bd=[['r','n','b','q','k','b','n','r'],['p','p','p','p','p','p','p','p'],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['P','P','P','P','P','P','P','P'],['R','N','B','Q','K','B','N','R']]; c_sel=null; c_hints=[]; turn='w'; document.getElementById('chess-status').innerText = 'دورك يا بطل (الأبيض) ⚪'; initChess(); }
 
     function initChess() {
         const b=document.getElementById('chess-board'); b.innerHTML='';
         for(let r=0;r<8;r++){
             for(let c=0;c<8;c++){
+                let p = c_bd[r][c];
                 let s=document.createElement('div');
                 s.className=`sq ${(r+c)%2==0?'w-sq':'b-sq'}`;
+                
+                // إضافة كلاسات للقطع البيضاء والسوداء عشان التجسيم
+                if(p) { if(p === p.toUpperCase()) s.classList.add('white-piece'); else s.classList.add('black-piece'); }
+
                 if(c_sel && c_sel.r===r && c_sel.c===c) s.classList.add('sel');
                 if(c_hints.some(h=>h.r===r && h.c===c)) s.classList.add('hint');
-                s.innerText=pieces[c_bd[r][c]]||'';
+                s.innerText=pieces[p]||'';
                 s.onclick=()=>clkSq(r,c);
                 b.appendChild(s);
             }
@@ -227,103 +264,150 @@
         if(turn !== 'w') return; 
         if(c_hints.some(h=>h.r===r && h.c===c)) {
             c_bd[r][c]=c_bd[c_sel.r][c_sel.c]; c_bd[c_sel.r][c_sel.c]='';
+            // ترقية العسكري للوزير تلقائي
+            if(c_bd[r][c]==='P' && r===0) c_bd[r][c]='Q';
+            
             c_sel=null; c_hints=[]; turn = 'b'; initChess();
-            document.getElementById('chess-status').innerText = 'الكمبيوتر بيفكر... 🤖';
-            setTimeout(computerPlay, 600); 
+            document.getElementById('chess-status').innerText = 'الكمبيوتر بيفكر... 🤖🧠';
+            setTimeout(computerPlay, 50); 
             return;
         }
         let p = c_bd[r][c];
-        if(p && p === p.toUpperCase()) { 
-            c_sel={r,c}; c_hints=getMoves(r,c); initChess();
-        } else { c_sel=null; c_hints=[]; initChess(); }
+        if(p && p === p.toUpperCase()) { c_sel={r,c}; c_hints=getMoves(r,c); initChess(); } 
+        else { c_sel=null; c_hints=[]; initChess(); }
     }
 
-    function computerPlay() {
-        let moves = [];
+    function evaluateBoard() {
+        let score = 0;
         for(let r=0; r<8; r++) {
             for(let c=0; c<8; c++) {
                 let p = c_bd[r][c];
-                if(p && p === p.toLowerCase()) { 
-                    let pMoves = getMoves(r,c);
-                    pMoves.forEach(tgt => moves.push({f: {r,c}, t: tgt}));
+                if(p) {
+                    let val = pVals[p.toLowerCase()];
+                    let posBonus = (3.5 - Math.abs(r - 3.5)) + (3.5 - Math.abs(c - 3.5)); // تشجيع السيطرة على المركز
+                    let totalVal = val + (posBonus * 0.5);
+                    score += (p === p.toLowerCase()) ? totalVal : -totalVal; // الأسود موجب والأبيض سالب عشان المينيماكس
                 }
             }
         }
-        if(moves.length === 0) { document.getElementById('chess-status').innerText = 'كش مات! اللعبة خلصت. 🏁'; return; }
+        return score;
+    }
+
+    function getAllMoves(color) {
+        let moves = [];
+        let isWhiteTurn = (color === 'w');
+        for(let r=0; r<8; r++) {
+            for(let c=0; c<8; c++) {
+                let p = c_bd[r][c];
+                if(p) {
+                    let pIsWhite = p === p.toUpperCase();
+                    if(pIsWhite === isWhiteTurn) {
+                        let pMoves = getMoves(r, c);
+                        for(let t of pMoves) moves.push({f: {r,c}, t: {r: t.r, c: t.c}});
+                    }
+                }
+            }
+        }
+        // ترتيب الحركات (الأكل الأول) لتسريع خوارزمية ألفا-بيتا
+        moves.sort((a,b) => (c_bd[b.t.r][b.t.c] ? 1 : 0) - (c_bd[a.t.r][a.t.c] ? 1 : 0));
+        return moves;
+    }
+
+    function minimax(depth, alpha, beta, isMaximizing) {
+        if(depth === 0) return evaluateBoard();
+        let moves = getAllMoves(isMaximizing ? 'b' : 'w');
+        if(moves.length === 0) return isMaximizing ? -99999 : 99999;
+
+        if(isMaximizing) {
+            let bestVal = -Infinity;
+            for(let m of moves) {
+                let captured = c_bd[m.t.r][m.t.c];
+                c_bd[m.t.r][m.t.c] = c_bd[m.f.r][m.f.c]; c_bd[m.f.r][m.f.c] = '';
+                let val = minimax(depth - 1, alpha, beta, false);
+                c_bd[m.f.r][m.f.c] = c_bd[m.t.r][m.t.c]; c_bd[m.t.r][m.t.c] = captured;
+                bestVal = Math.max(bestVal, val);
+                alpha = Math.max(alpha, bestVal);
+                if(beta <= alpha) break;
+            }
+            return bestVal;
+        } else {
+            let bestVal = Infinity;
+            for(let m of moves) {
+                let captured = c_bd[m.t.r][m.t.c];
+                c_bd[m.t.r][m.t.c] = c_bd[m.f.r][m.f.c]; c_bd[m.f.r][m.f.c] = '';
+                let val = minimax(depth - 1, alpha, beta, true);
+                c_bd[m.f.r][m.f.c] = c_bd[m.t.r][m.t.c]; c_bd[m.t.r][m.t.c] = captured;
+                bestVal = Math.min(bestVal, val);
+                beta = Math.min(beta, bestVal);
+                if(beta <= alpha) break;
+            }
+            return bestVal;
+        }
+    }
+
+    function computerPlay() {
+        let moves = getAllMoves('b');
+        if(moves.length === 0) { document.getElementById('chess-status').innerText = 'انتهت اللعبة! 🏁'; return; }
         
-        let bestScore = -1, bestMoves = [];
-        moves.forEach(m => {
-            let tgtPiece = c_bd[m.t.r][m.t.c];
-            let score = tgtPiece ? pVals[tgtPiece.toLowerCase()] : 0; 
-            if(score === 0) score = (m.t.r - m.f.r) * 0.1; 
-            if(score > bestScore) { bestScore = score; bestMoves = [m]; }
-            else if(score === bestScore) { bestMoves.push(m); }
-        });
+        let bestVal = -Infinity;
+        let bestMove = null;
         
-        let chosen = bestMoves[Math.floor(Math.random() * bestMoves.length)];
-        c_bd[chosen.t.r][chosen.t.c] = c_bd[chosen.f.r][chosen.f.c]; c_bd[chosen.f.r][chosen.f.c] = '';
+        // حساب أفضل حركة (Depth 3)
+        for(let m of moves) {
+            let captured = c_bd[m.t.r][m.t.c];
+            c_bd[m.t.r][m.t.c] = c_bd[m.f.r][m.f.c]; c_bd[m.f.r][m.f.c] = '';
+            
+            let val = minimax(2, -Infinity, Infinity, false); 
+            
+            c_bd[m.f.r][m.f.c] = c_bd[m.t.r][m.t.c]; c_bd[m.t.r][m.t.c] = captured;
+            
+            if(val > bestVal) { bestVal = val; bestMove = m; }
+        }
+
+        if(bestMove) {
+            c_bd[bestMove.t.r][bestMove.t.c] = c_bd[bestMove.f.r][bestMove.f.c];
+            c_bd[bestMove.f.r][bestMove.f.c] = '';
+            if(c_bd[bestMove.t.r][bestMove.t.c]==='p' && bestMove.t.r===7) c_bd[bestMove.t.r][bestMove.t.c]='q'; // ترقية
+        }
+        
         turn = 'w'; initChess();
         document.getElementById('chess-status').innerText = 'دورك يا بطل (الأبيض) ⚪';
     }
 
+    // حساب الحركات القانونية لكل قطعة
     function getMoves(r,c) {
         let m=[], p=c_bd[r][c]; if(!p) return m;
         let isWhite = p === p.toUpperCase(); p = p.toLowerCase();
         const isEnemy=(row,col)=>{ if(row<0||row>7||col<0||col>7||c_bd[row][col]==='') return false; return isWhite !== (c_bd[row][col]===c_bd[row][col].toUpperCase()); };
         const isEmpty=(row,col)=>row>=0&&row<=7&&col>=0&&col<=7&&c_bd[row][col]==='';
 
-        if(p==='p') {
+        if(p==='p') { // العسكري
             let dir=isWhite?-1:1;
             if(isEmpty(r+dir,c)) m.push({r:r+dir, c});
             if((isWhite&&r===6||!isWhite&&r===1)&&isEmpty(r+dir,c)&&isEmpty(r+2*dir,c)) m.push({r:r+2*dir, c});
             if(isEnemy(r+dir,c-1)) m.push({r:r+dir, c:c-1});
             if(isEnemy(r+dir,c+1)) m.push({r:r+dir, c:c+1});
         }
-        if(p==='r'||p==='q') { [[0,1],[0,-1],[1,0],[-1,0]].forEach(d=>{ for(let i=1;i<8;i++){ let nr=r+d[0]*i, nc=c+d[1]*i; if(isEmpty(nr,nc)){ m.push({r:nr,c:nc}); } else { if(isEnemy(nr,nc)) m.push({r:nr,c:nc}); break; } } }); }
-        if(p==='b'||p==='q') { [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(d=>{ for(let i=1;i<8;i++){ let nr=r+d[0]*i, nc=c+d[1]*i; if(isEmpty(nr,nc)){ m.push({r:nr,c:nc}); } else { if(isEnemy(nr,nc)) m.push({r:nr,c:nc}); break; } } }); }
-        if(p==='n') { [[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]].forEach(d=>{ let nr=r+d[0], nc=c+d[1]; if(isEmpty(nr,nc)||isEnemy(nr,nc)) m.push({r:nr,c:nc}); }); }
-        if(p==='k') { [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(d=>{ let nr=r+d[0], nc=c+d[1]; if(isEmpty(nr,nc)||isEnemy(nr,nc)) m.push({r:nr,c:nc}); }); }
+        if(p==='r'||p==='q') { // الطابية والوزير
+            [[0,1],[0,-1],[1,0],[-1,0]].forEach(d=>{ for(let i=1;i<8;i++){ let nr=r+d[0]*i, nc=c+d[1]*i; if(isEmpty(nr,nc)){ m.push({r:nr,c:nc}); } else { if(isEnemy(nr,nc)) m.push({r:nr,c:nc}); break; } } });
+        }
+        if(p==='b'||p==='q') { // الفيل والوزير
+            [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(d=>{ for(let i=1;i<8;i++){ let nr=r+d[0]*i, nc=c+d[1]*i; if(isEmpty(nr,nc)){ m.push({r:nr,c:nc}); } else { if(isEnemy(nr,nc)) m.push({r:nr,c:nc}); break; } } });
+        }
+        if(p==='n') { // الحصان
+            [[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]].forEach(d=>{ let nr=r+d[0], nc=c+d[1]; if(isEmpty(nr,nc)||isEnemy(nr,nc)) m.push({r:nr,c:nc}); });
+        }
+        if(p==='k') { // الملك
+            [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(d=>{ let nr=r+d[0], nc=c+d[1]; if(isEmpty(nr,nc)||isEnemy(nr,nc)) m.push({r:nr,c:nc}); });
+        }
         return m;
     }
     initChess();
-
-    // ================= BBTAN =================
-    const bCvs=document.getElementById('bbtan'), bCtx=bCvs.getContext('2d');
-    let balls=[], blocks=[], bLvl=1, bState=0, sX=150, isAim=false, aX, aY;
-    function initBB(){ clearInterval(window.bL); bLvl=1; blocks=[]; spawnB(); window.bL=setInterval(upBB,16); }
-    function spawnB(){ blocks.forEach(b=>b.y+=45); for(let i=0;i<6;i++)if(Math.random()>.4)blocks.push({x:i*50+2,y:50,w:46,h:46,hp:bLvl}); bLvl++; document.getElementById('bb-lvl').innerText=bLvl; }
-    bCvs.onmousedown=bCvs.ontouchstart=e=>{if(bState==0)isAim=true;};
-    bCvs.onmousemove=bCvs.ontouchmove=e=>{if(isAim){let r=bCvs.getBoundingClientRect(); aX=(e.touches?e.touches[0].clientX:e.clientX)-r.left; aY=(e.touches?e.touches[0].clientY:e.clientY)-r.top;}};
-    bCvs.onmouseup=bCvs.ontouchend=e=>{if(isAim){isAim=false; let dx=aX-sX,dy=aY-390,ang=Math.atan2(dy,dx); balls=[]; for(let i=0;i<bLvl;i++) balls.push({x:sX, y:390, vx:Math.cos(ang)*14, vy:Math.sin(ang)*14, act:true, w:i*2}); bState=1;}};
-    function upBB(){
-        if(bState==1){
-            let done=true; balls.forEach(b=>{
-                if(!b.act)return; if(b.w>0){b.w--;done=false;return;} b.x+=b.vx; b.y+=b.vy; done=false;
-                if(b.x<4||b.x>296)b.vx*=-1; if(b.y<4)b.vy*=-1; if(b.y>390){b.act=false; b.y=390;}
-                blocks.forEach(bl=>{ if(bl.hp>0&&b.x>bl.x&&b.x<bl.x+bl.w&&b.y>bl.y&&b.y<bl.y+bl.h){bl.hp--; b.vy*=-1;}});
-            });
-            blocks=blocks.filter(b=>b.hp>0); if(done){bState=0; spawnB();}
-        } 
-        bCtx.fillStyle='#222'; bCtx.fillRect(0,0,300,400); blocks.forEach(bl=>{bCtx.fillStyle='orange'; bCtx.fillRect(bl.x,bl.y,bl.w,bl.h); bCtx.fillStyle='white'; bCtx.font='16px Arial'; bCtx.fillText(bl.hp,bl.x+15,bl.y+25);});
-        bCtx.fillStyle='cyan'; balls.forEach(b=>{if(b.act&&b.w<=0){bCtx.beginPath();bCtx.arc(b.x,b.y,4,0,7);bCtx.fill();}}); if(bState==0){bCtx.beginPath();bCtx.arc(sX,390,5,0,7);bCtx.fill();}
-        if(isAim && bState==0){ bCtx.beginPath(); bCtx.moveTo(sX,390); bCtx.lineTo(aX,aY); bCtx.strokeStyle='rgba(255,255,255,0.5)'; bCtx.setLineDash([5,5]); bCtx.stroke(); bCtx.setLineDash([]); }
-    }
-
-    // --- ثعبان و XO ---
-    let s_sn, s_fd, s_d, s_i; function startSnake(){ clearInterval(s_i); s_sn=[{x:10,y:10}]; s_fd={x:5,y:5}; s_d="R"; s_i=setInterval(dS,100); }
-    function dS(){ const c=document.getElementById('s-canv'), g=c.getContext('2d'); g.fillStyle="black"; g.fillRect(0,0,300,300); g.fillStyle="lime"; s_sn.forEach(p=>g.fillRect(p.x*10,p.y*10,9,9)); g.fillStyle="red"; g.fillRect(s_fd.x*10,s_fd.y*10,9,9); let h={x:s_sn[0].x,y:s_sn[0].y}; if(s_d=="R")h.x++; if(s_d=="L")h.x--; if(s_d=="U")h.y--; if(s_d=="D")h.y++; s_sn.unshift(h); if(h.x==s_fd.x&&h.y==s_fd.y)s_fd={x:Math.floor(Math.random()*30),y:Math.floor(Math.random()*30)}; else s_sn.pop(); if(h.x<0||h.x>=30||h.y<0||h.y>=30)clearInterval(s_i); }
-    window.onkeydown=e=>{if(e.key.includes("Arrow"))s_d=e.key[5].toUpperCase();};
-
-    let x_t='X', x_d=Array(9).fill(""); function resetXO(){ const b=document.getElementById('xo-board'); b.innerHTML=''; x_d.fill(""); for(let i=0;i<9;i++){let c=document.createElement('div');c.className='xo-c';c.onclick=()=>{if(!x_d[i]){x_d[i]=x_t;c.innerText=x_t;x_t=x_t=='X'?'O':'X';}};b.appendChild(c);}}
-    resetXO();
-
-    let h_s=0; function hit(){h_s++;document.getElementById('score').innerText=h_s;}
 </script>
 <footer>
+    <p style="font-size: 16px; font-weight: bold; margin-top:30px; color:var(--text-muted);">© 2026 ENG OMAR All Rights Reserved.</p>
+    <p style="color:var(--text-muted);">اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى سَيِّدِنَا مُحَمَّدٍ ﷺ</p>
+</footer>
 
-        <p style="font-size: 22px; font-weight: bold;">© 2027 _ 2026 ENG OMAR All Rights Reserved.</p>
 
-        <p>اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى سَيِّدِنَا مُحَمَّدٍ ﷺ</p>
-
-    </footer>
 </body></html>
