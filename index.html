@@ -46,7 +46,7 @@
 
         /* XO */
         .xo-g { display: grid; grid-template-columns: repeat(3, 80px); gap: 5px; justify-content: center; margin: 20px auto; }
-        .xo-c { width: 80px; height: 80px; background: var(--bg); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 50px; cursor: pointer; border-radius: 10px; font-weight: bold; color: var(--text); }
+        .xo-c { width: 80px; height: 80px; background: var(--bg); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 50px; cursor: pointer; border-radius: 10px; font-weight: bold; color: var(--text); transition: 0.2s;}
 
         /* كانفاس الألعاب */
         canvas { display: block; margin: 10px auto; border-radius: 10px; border: 2px solid var(--border); background: #111; touch-action: none; }
@@ -68,7 +68,7 @@
         .azkar-list h3 { color: var(--primary); margin-top: 0; }
         .azkar-list p { margin-bottom: 15px; border-bottom: 1px dashed var(--border); padding-bottom: 10px; }
     </style>
-</head>
+<style>:is([id*='google_ads_iframe'],[id*='taboola-'],.taboolaHeight,.taboola-placeholder,#top-ad,#credential_picker_container,#credentials-picker-container,#credential_picker_iframe,[id*='google-one-tap-iframe'],#google-one-tap-popup-container,.google-one-tap__module,.google-one-tap-modal-div,#amp_floatingAdDiv,#ez-content-blocker-container) {display:none!important;min-height:0!important;height:0!important;}</style></head>
 <body>
 
 <nav>
@@ -79,7 +79,12 @@
     <button onclick="nav('az', this)" class="">📿 أذكار</button>
     <button onclick="nav('xo', this)" class="">❌ XO (AI)</button>
     <button onclick="nav('sn', this)" class="">🐍 ثعبان</button>
-    <button onclick="nav('cl', this)" class="">⚡ ضغط</button><button onclick="window.open('https://omarsalam22142214-ops.github.io/ASKME17')" class="cat-btn match-btn" style="display: inline-flex; direction: rtl;"> تحديات <div class="fav-icon-star" title="المفضلة">★</div></button>
+    <button onclick="nav('cl', this)" class="">⚡ ضغط</button>
+    <button onclick="nav('mg', this)" class="">🧠 ذاكرة</button>
+    <button onclick="nav('pp', this)" class="">🏓 بونج</button>
+    <button onclick="nav('rps', this)" class="">✌️ مقص</button>
+    
+    <button onclick="window.open('https://omarsalam22142214-ops.github.io/ASKME17')" class="cat-btn match-btn" style="display: inline-flex; direction: rtl;"> تحديات <div class="fav-icon-star" title="المفضلة">★</div></button>
     <button id="theme-btn" onclick="toggleTheme()">☀️</button>
 </nav>
 
@@ -91,7 +96,7 @@
 <div id="ch" class="section">
     <div class="box">
         <h2>شطرنج المحترفين 🤖🧠</h2>
-        <div id="chess-board" class="chess-grid"><div class="sq w-sq black-piece">♜</div><div class="sq b-sq black-piece">♞</div><div class="sq w-sq black-piece">♝</div><div class="sq b-sq black-piece">♛</div><div class="sq w-sq black-piece">♚</div><div class="sq b-sq black-piece">♝</div><div class="sq w-sq black-piece">♞</div><div class="sq b-sq black-piece">♜</div><div class="sq b-sq black-piece">♟</div><div class="sq w-sq black-piece">♟</div><div class="sq b-sq black-piece">♟</div><div class="sq w-sq black-piece">♟</div><div class="sq b-sq black-piece">♟</div><div class="sq w-sq black-piece">♟</div><div class="sq b-sq black-piece">♟</div><div class="sq w-sq black-piece">♟</div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq b-sq"></div><div class="sq w-sq"></div><div class="sq w-sq white-piece">♙</div><div class="sq b-sq white-piece">♙</div><div class="sq w-sq white-piece">♙</div><div class="sq b-sq white-piece">♙</div><div class="sq w-sq white-piece">♙</div><div class="sq b-sq white-piece">♙</div><div class="sq w-sq white-piece">♙</div><div class="sq b-sq white-piece">♙</div><div class="sq b-sq white-piece">♖</div><div class="sq w-sq white-piece">♘</div><div class="sq b-sq white-piece">♗</div><div class="sq w-sq white-piece">♕</div><div class="sq b-sq white-piece">♔</div><div class="sq w-sq white-piece">♗</div><div class="sq b-sq white-piece">♘</div><div class="sq w-sq white-piece">♖</div></div>
+        <div id="chess-board" class="chess-grid"></div>
         <div id="chess-status">دورك يا بطل (الأبيض) ⚪</div><br>
         <button class="main-btn" onclick="resetChess()">لعبة جديدة</button>
     </div>
@@ -163,6 +168,35 @@
 <div id="sn" class="section"><div class="box"><h2>الثعبان 🐍</h2><p>النقاط: <span id="sn-score">0</span></p><canvas id="s-canv" width="300" height="300"></canvas><button class="main-btn" onclick="startSnake()">ابدأ</button></div></div>
 <div id="cl" class="section"><div class="box"><h2>الضغط</h2><h1 id="score">0</h1><button class="main-btn" onclick="hit()" style="padding:40px; border-radius:50%; font-size:24px;">اضغط!</button></div></div>
 
+<div id="mg" class="section">
+    <div class="box">
+        <h2>لعبة الذاكرة 🧠</h2>
+        <div id="mg-grid" style="display:grid; grid-template-columns:repeat(4, 60px); gap:10px; justify-content:center; margin:15px auto;"></div>
+        <button class="main-btn" onclick="initMG()">لعبة جديدة</button>
+    </div>
+</div>
+
+<div id="pp" class="section">
+    <div class="box">
+        <h2>بينج بونج 🏓</h2>
+        <p>النقاط: <span id="pp-sc" style="color:var(--success); font-weight:bold; font-size:20px;">0</span></p>
+        <canvas id="pp-cvs" width="300" height="400"></canvas>
+        <button class="main-btn" onclick="initPP()">ابدأ</button>
+    </div>
+</div>
+
+<div id="rps" class="section">
+    <div class="box">
+        <h2>حجر، ورقة، مقص ✌️</h2>
+        <h1 id="rps-res" style="color:var(--primary); margin:20px 0;">اختار عشان تلعب!</h1>
+        <div>
+            <button class="main-btn" style="font-size:30px; padding:15px;" onclick="playRPS('✊')">✊</button>
+            <button class="main-btn" style="font-size:30px; padding:15px;" onclick="playRPS('✋')">✋</button>
+            <button class="main-btn" style="font-size:30px; padding:15px;" onclick="playRPS('✌️')">✌️</button>
+        </div>
+    </div>
+</div>
+
 <script>
     // --- التنقل ---
     function nav(id, btn) {
@@ -232,7 +266,7 @@
 
     let h_s=0; function hit(){h_s++;document.getElementById('score').innerText=h_s;}
 
-    // ================= الشطرنج الاحترافي (Minimax AI Depth 3) =================
+    // ================= الشطرنج الاحترافي =================
     const pieces={'r':'♜','n':'♞','b':'♝','q':'♛','k':'♚','p':'♟','R':'♖','N':'♘','B':'♗','Q':'♕','K':'♔','P':'♙'};
     const pVals = {'p':10, 'n':30, 'b':30, 'r':50, 'q':90, 'k':9000}; 
     let c_bd=[['r','n','b','q','k','b','n','r'],['p','p','p','p','p','p','p','p'],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['P','P','P','P','P','P','P','P'],['R','N','B','Q','K','B','N','R']];
@@ -247,10 +281,7 @@
                 let p = c_bd[r][c];
                 let s=document.createElement('div');
                 s.className=`sq ${(r+c)%2==0?'w-sq':'b-sq'}`;
-                
-                // إضافة كلاسات للقطع البيضاء والسوداء عشان التجسيم
                 if(p) { if(p === p.toUpperCase()) s.classList.add('white-piece'); else s.classList.add('black-piece'); }
-
                 if(c_sel && c_sel.r===r && c_sel.c===c) s.classList.add('sel');
                 if(c_hints.some(h=>h.r===r && h.c===c)) s.classList.add('hint');
                 s.innerText=pieces[p]||'';
@@ -264,9 +295,7 @@
         if(turn !== 'w') return; 
         if(c_hints.some(h=>h.r===r && h.c===c)) {
             c_bd[r][c]=c_bd[c_sel.r][c_sel.c]; c_bd[c_sel.r][c_sel.c]='';
-            // ترقية العسكري للوزير تلقائي
             if(c_bd[r][c]==='P' && r===0) c_bd[r][c]='Q';
-            
             c_sel=null; c_hints=[]; turn = 'b'; initChess();
             document.getElementById('chess-status').innerText = 'الكمبيوتر بيفكر... 🤖🧠';
             setTimeout(computerPlay, 50); 
@@ -284,9 +313,9 @@
                 let p = c_bd[r][c];
                 if(p) {
                     let val = pVals[p.toLowerCase()];
-                    let posBonus = (3.5 - Math.abs(r - 3.5)) + (3.5 - Math.abs(c - 3.5)); // تشجيع السيطرة على المركز
+                    let posBonus = (3.5 - Math.abs(r - 3.5)) + (3.5 - Math.abs(c - 3.5)); 
                     let totalVal = val + (posBonus * 0.5);
-                    score += (p === p.toLowerCase()) ? totalVal : -totalVal; // الأسود موجب والأبيض سالب عشان المينيماكس
+                    score += (p === p.toLowerCase()) ? totalVal : -totalVal; 
                 }
             }
         }
@@ -308,7 +337,6 @@
                 }
             }
         }
-        // ترتيب الحركات (الأكل الأول) لتسريع خوارزمية ألفا-بيتا
         moves.sort((a,b) => (c_bd[b.t.r][b.t.c] ? 1 : 0) - (c_bd[a.t.r][a.t.c] ? 1 : 0));
         return moves;
     }
@@ -349,65 +377,106 @@
         let moves = getAllMoves('b');
         if(moves.length === 0) { document.getElementById('chess-status').innerText = 'انتهت اللعبة! 🏁'; return; }
         
-        let bestVal = -Infinity;
-        let bestMove = null;
-        
-        // حساب أفضل حركة (Depth 3)
+        let bestVal = -Infinity, bestMove = null;
         for(let m of moves) {
             let captured = c_bd[m.t.r][m.t.c];
             c_bd[m.t.r][m.t.c] = c_bd[m.f.r][m.f.c]; c_bd[m.f.r][m.f.c] = '';
-            
             let val = minimax(2, -Infinity, Infinity, false); 
-            
             c_bd[m.f.r][m.f.c] = c_bd[m.t.r][m.t.c]; c_bd[m.t.r][m.t.c] = captured;
-            
             if(val > bestVal) { bestVal = val; bestMove = m; }
         }
 
         if(bestMove) {
             c_bd[bestMove.t.r][bestMove.t.c] = c_bd[bestMove.f.r][bestMove.f.c];
             c_bd[bestMove.f.r][bestMove.f.c] = '';
-            if(c_bd[bestMove.t.r][bestMove.t.c]==='p' && bestMove.t.r===7) c_bd[bestMove.t.r][bestMove.t.c]='q'; // ترقية
+            if(c_bd[bestMove.t.r][bestMove.t.c]==='p' && bestMove.t.r===7) c_bd[bestMove.t.r][bestMove.t.c]='q';
         }
         
         turn = 'w'; initChess();
         document.getElementById('chess-status').innerText = 'دورك يا بطل (الأبيض) ⚪';
     }
 
-    // حساب الحركات القانونية لكل قطعة
     function getMoves(r,c) {
         let m=[], p=c_bd[r][c]; if(!p) return m;
         let isWhite = p === p.toUpperCase(); p = p.toLowerCase();
         const isEnemy=(row,col)=>{ if(row<0||row>7||col<0||col>7||c_bd[row][col]==='') return false; return isWhite !== (c_bd[row][col]===c_bd[row][col].toUpperCase()); };
         const isEmpty=(row,col)=>row>=0&&row<=7&&col>=0&&col<=7&&c_bd[row][col]==='';
 
-        if(p==='p') { // العسكري
+        if(p==='p') { 
             let dir=isWhite?-1:1;
             if(isEmpty(r+dir,c)) m.push({r:r+dir, c});
             if((isWhite&&r===6||!isWhite&&r===1)&&isEmpty(r+dir,c)&&isEmpty(r+2*dir,c)) m.push({r:r+2*dir, c});
             if(isEnemy(r+dir,c-1)) m.push({r:r+dir, c:c-1});
             if(isEnemy(r+dir,c+1)) m.push({r:r+dir, c:c+1});
         }
-        if(p==='r'||p==='q') { // الطابية والوزير
-            [[0,1],[0,-1],[1,0],[-1,0]].forEach(d=>{ for(let i=1;i<8;i++){ let nr=r+d[0]*i, nc=c+d[1]*i; if(isEmpty(nr,nc)){ m.push({r:nr,c:nc}); } else { if(isEnemy(nr,nc)) m.push({r:nr,c:nc}); break; } } });
-        }
-        if(p==='b'||p==='q') { // الفيل والوزير
-            [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(d=>{ for(let i=1;i<8;i++){ let nr=r+d[0]*i, nc=c+d[1]*i; if(isEmpty(nr,nc)){ m.push({r:nr,c:nc}); } else { if(isEnemy(nr,nc)) m.push({r:nr,c:nc}); break; } } });
-        }
-        if(p==='n') { // الحصان
-            [[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]].forEach(d=>{ let nr=r+d[0], nc=c+d[1]; if(isEmpty(nr,nc)||isEnemy(nr,nc)) m.push({r:nr,c:nc}); });
-        }
-        if(p==='k') { // الملك
-            [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(d=>{ let nr=r+d[0], nc=c+d[1]; if(isEmpty(nr,nc)||isEnemy(nr,nc)) m.push({r:nr,c:nc}); });
-        }
+        if(p==='r'||p==='q') { [[0,1],[0,-1],[1,0],[-1,0]].forEach(d=>{ for(let i=1;i<8;i++){ let nr=r+d[0]*i, nc=c+d[1]*i; if(isEmpty(nr,nc)){ m.push({r:nr,c:nc}); } else { if(isEnemy(nr,nc)) m.push({r:nr,c:nc}); break; } } }); }
+        if(p==='b'||p==='q') { [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(d=>{ for(let i=1;i<8;i++){ let nr=r+d[0]*i, nc=c+d[1]*i; if(isEmpty(nr,nc)){ m.push({r:nr,c:nc}); } else { if(isEnemy(nr,nc)) m.push({r:nr,c:nc}); break; } } }); }
+        if(p==='n') { [[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]].forEach(d=>{ let nr=r+d[0], nc=c+d[1]; if(isEmpty(nr,nc)||isEnemy(nr,nc)) m.push({r:nr,c:nc}); }); }
+        if(p==='k') { [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(d=>{ let nr=r+d[0], nc=c+d[1]; if(isEmpty(nr,nc)||isEnemy(nr,nc)) m.push({r:nr,c:nc}); }); }
         return m;
     }
     initChess();
+
+    // ================= أكواد الألعاب الجديدة =================
+
+    // --- لعبة الذاكرة ---
+    let mg_e=['🍎','🍎','🍌','🍌','🍉','🍉','🍇','🍇','🍓','🍓','🍒','🍒','🍍','🍍','🥝','🥝'], mg_f=[], mg_m=0;
+    function initMG(){
+        mg_e.sort(()=>Math.random()-0.5); mg_f=[]; mg_m=0;
+        let b=document.getElementById('mg-grid'); b.innerHTML='';
+        mg_e.forEach((e,i)=>{
+            let c=document.createElement('div');
+            c.className='xo-c'; c.style.fontSize='35px'; c.style.width='60px'; c.style.height='60px';
+            c.onclick=()=>{
+                if(mg_f.length<2 && !c.innerText){
+                    c.innerText=e; mg_f.push({c,e});
+                    if(mg_f.length==2){
+                        if(mg_f[0].e==mg_f[1].e){ mg_m+=2; mg_f=[]; if(mg_m==16) setTimeout(()=>alert('كسبت يا بطل! ذاكرتك حديد 💪'), 100); }
+                        else { setTimeout(()=>{mg_f[0].c.innerText=''; mg_f[1].c.innerText=''; mg_f=[];}, 600); }
+                    }
+                }
+            };
+            b.appendChild(c);
+        });
+    }
+    initMG();
+
+    // --- لعبة بينج بونج ---
+    let pp_i, pp_px=110, pp_bx=150, pp_by=50, pp_vx=4, pp_vy=4, pp_s=0;
+    const ppCvs=document.getElementById('pp-cvs'), ppCtx=ppCvs.getContext('2d');
+    ppCvs.ontouchmove=ppCvs.onmousemove=e=>{
+        let r=ppCvs.getBoundingClientRect(), x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+        pp_px = x - 40; if(pp_px<0)pp_px=0; if(pp_px>220)pp_px=220;
+    };
+    function initPP(){
+        clearInterval(pp_i); pp_px=110; pp_bx=150; pp_by=50; pp_vx=4; pp_vy=4; pp_s=0; 
+        document.getElementById('pp-sc').innerText=pp_s;
+        pp_i=setInterval(upPP,20);
+    }
+    function upPP(){
+        ppCtx.fillStyle='#111'; ppCtx.fillRect(0,0,300,400);
+        ppCtx.fillStyle='#1e90ff'; ppCtx.fillRect(pp_px,380,80,10);
+        ppCtx.fillStyle='#ff4757'; ppCtx.beginPath(); ppCtx.arc(pp_bx,pp_by,6,0,7); ppCtx.fill();
+        pp_bx+=pp_vx; pp_by+=pp_vy;
+        if(pp_bx<6||pp_bx>294)pp_vx*=-1;
+        if(pp_by<6)pp_vy*=-1;
+        if(pp_by>374 && pp_by<384 && pp_bx>pp_px && pp_bx<pp_px+80){ pp_vy*=-1; pp_s++; document.getElementById('pp-sc').innerText=pp_s; pp_vx*=1.05; pp_vy*=1.05; }
+        if(pp_by>400){ clearInterval(pp_i); alert('جيم أوفر! جبت '+pp_s+' نقطة 💔'); }
+    }
+
+    // --- حجر ورقة مقص ---
+    function playRPS(p){
+        let c = ['✊','✋','✌️'][Math.floor(Math.random()*3)];
+        let res = 'الكمبيوتر اختار: ' + c + '<br>';
+        if(p===c) res += 'تعادل! 🤝';
+        else if((p==='✊'&&c==='✌️')||(p==='✋'&&c==='✊')||(p==='✌️'&&c==='✋')) res += 'أنت كسبت! 🎉';
+        else res += 'الكمبيوتر كسب! 🤖';
+        document.getElementById('rps-res').innerHTML = res;
+    }
 </script>
 <footer>
     <p style="font-size: 16px; font-weight: bold; margin-top:30px; color:var(--text-muted);">© 2026 ENG OMAR All Rights Reserved.</p>
     <p style="color:var(--text-muted);">اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى سَيِّدِنَا مُحَمَّدٍ ﷺ</p>
 </footer>
-
 
 </body></html>
