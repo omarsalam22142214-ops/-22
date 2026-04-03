@@ -26,6 +26,12 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .box { background: var(--box-bg); padding: 20px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: inline-block; max-width: 95%; margin-bottom: 20px; border: 1px solid var(--border); transition: 0.3s; }
         button.main-btn { background: var(--success); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 10px; font-weight: bold; font-size: 16px; }
+        
+        /* أزرار التحكم للموبايل */
+        .mobile-ctrl { display: flex; flex-direction: column; align-items: center; gap: 5px; margin: 15px 0; }
+        .ctrl-btn { width: 60px; height: 60px; background: var(--border); color: var(--text); border: none; border-radius: 10px; font-size: 24px; cursor: pointer; touch-action: manipulation; }
+        .ctrl-btn:active { background: var(--primary); }
+
         /* شطرنج احترافي 3D */
         .chess-grid { display: grid; grid-template-columns: repeat(8, 55px); grid-template-rows: repeat(8, 55px); border: 8px solid #222; margin: 15px auto; justify-content: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); border-radius: 6px; }
         .sq { width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; font-size: 45px; cursor: pointer; position: relative; transition: 0.1s; font-family: Arial, sans-serif; }
@@ -60,7 +66,7 @@
         .azkar-list h3 { color: var(--primary); margin-top: 0; }
         .azkar-list p { margin-bottom: 15px; border-bottom: 1px dashed var(--border); padding-bottom: 10px; }
     </style>
-<style>:is([id*='google_ads_iframe'],[id*='taboola-'],.taboolaHeight,.taboola-placeholder,#top-ad,#credential_picker_container,#credentials-picker-container,#credential_picker_iframe,[id*='google-one-tap-iframe'],#google-one-tap-popup-container,.google-one-tap__module,.google-one-tap-modal-div,#amp_floatingAdDiv,#ez-content-blocker-container) {display:none!important;min-height:0!important;height:0!important;}</style><style>:is([id*='google_ads_iframe'],[id*='taboola-'],.taboolaHeight,.taboola-placeholder,#top-ad,#credential_picker_container,#credentials-picker-container,#credential_picker_iframe,[id*='google-one-tap-iframe'],#google-one-tap-popup-container,.google-one-tap__module,.google-one-tap-modal-div,#amp_floatingAdDiv,#ez-content-blocker-container) {display:none!important;min-height:0!important;height:0!important;}</style></head>
+</head>
 <body>
 <nav>
     <button onclick="nav('h', this)" class="active">🏠</button>
@@ -80,7 +86,7 @@
     <button id="theme-btn" onclick="toggleTheme()">☀️</button>
 </nav>
 <div id="h" class="section active">
-    <h1>أركيد المحترفين 🚀</h1>
+    <h1>أركيد المحترفين الاوفلاين  🚀</h1>
     <p style="color:var(--text-muted);"></p>
 </div>
 <div id="ch" class="section">
@@ -97,7 +103,7 @@
         <div id="disp">0</div>
         <button class="main-btn" style="width:100%; margin: 0 0 10px 0; background:var(--border); color:var(--text);" onclick="toggleSci()">إظهار/إخفاء الدوال العلمية 🔽</button>
         
-        <div id="sci-panel" class="sci-panel">
+        <div id="sci-panel" class="sci-panel show">
             <button onclick="calc('π')">π</button><button onclick="calc('e')">e</button><button onclick="calc('φ')">φ</button><button onclick="calc('log(')">log</button><button onclick="calc('ln(')">ln</button>
             <button onclick="calc('log2(')">log₂</button><button onclick="calc('√(')">√</button><button onclick="calc('∛(')">∛</button><button onclick="calc('abs(')">|x|</button><button onclick="calc('^')">^</button>
             <button onclick="calc('sin(')">sin</button><button onclick="calc('cos(')">cos</button><button onclick="calc('tan(')">tan</button><button onclick="calc('sin⁻¹(')">sin⁻¹</button><button onclick="calc('cos⁻¹(')">cos⁻¹</button>
@@ -116,7 +122,7 @@
     <div class="box">
         <h2>X-O (ضد الكمبيوتر) 🤖</h2>
         <div id="xo-status" style="font-size:20px; font-weight:bold; color:var(--primary);">دورك (X)</div>
-        <div id="xo-board" class="xo-g"><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div></div>
+        <div id="xo-board" class="xo-g"><div class="xo-c" style="color: var(--primary);">O</div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c" style="color: var(--danger);">X</div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div></div>
         <button class="main-btn" onclick="resetXO()">إعادة اللعب</button>
     </div>
 </div>
@@ -135,7 +141,7 @@
             <p>أَعُوذُ بِاللهِ مِنْ الشَّيْطَانِ الرَّجِيمِ: اللّهُ لاَ إِلَـهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ لاَ تَأْخُذُهُ سِنَةٌ وَلاَ نَوْمٌ...</p>
             <p>بِسْمِ اللهِ الرَّحْمنِ الرَّحِيمِ: قُلْ هُوَ ٱللَّهُ أَحَدٌ، ٱللَّهُ ٱلصَّمَدُ، لَمْ يَلِدْ وَلَمْ يُولَدْ، وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ. (3 مرات)</p>
             <p>أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ لا إِلَهَ إِلا اللَّهُ، وَحْدَهُ لا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ.</p>
-            <p>اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلا أَنْتَ ، خَلَقْتَنِي وَأَنَا عَبْدُكَ ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ.</p>
+            <p>اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلا أنتَ ، خَلَقْتَنِي وَأَنَا عَبْدُكَ ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ.</p>
             <p>بِسـمِ اللهِ الذي لا يَضُـرُّ مَعَ اسمِـهِ شَيءٌ في الأرْضِ وَلا في السّمـاءِ وَهـوَ السّمـيعُ العَلـيم. (3 مرات)</p>
             <p>رَضيـتُ بِاللهِ رَبَّـاً وَبِالإسْلامِ ديـناً وَبِمُحَـمَّدٍ صلى الله عليه وسلم نَبِيّـاً. (3 مرات)</p>
         </div>
@@ -144,12 +150,29 @@
 <div id="bb" class="section">
     <div class="box">
         <h2>BBTAN 🔵</h2>
-        <p>المستوى: <span id="bb-lvl" style="color:var(--danger); font-weight:bold; font-size:20px;">1</span></p>
+        <p>المستوى: <span id="bb-lvl" style="color:var(--danger); font-weight:bold; font-size:20px;">3</span></p>
         <canvas id="bbtan" width="300" height="400"></canvas>
         <button class="main-btn" onclick="initBB()">بدأ اللعبة</button>
     </div>
 </div>
-<div id="sn" class="section"><div class="box"><h2>الثعبان 🐍</h2><p>النقاط: <span id="sn-score">0</span></p><canvas id="s-canv" width="300" height="300"></canvas><button class="main-btn" onclick="startSnake()">ابدأ</button></div></div>
+<div id="sn" class="section">
+    <div class="box">
+        <h2>الثعبان 🐍</h2>
+        <p>النقاط: <span id="sn-score">0</span></p>
+        <canvas id="s-canv" width="300" height="300"></canvas>
+        
+        <div class="mobile-ctrl">
+            <button class="ctrl-btn" onclick="changeDir('U')">🔼</button>
+            <div style="display:flex; gap:10px;">
+                <button class="ctrl-btn" onclick="changeDir('R')">▶️</button>
+                <button class="ctrl-btn" onclick="changeDir('L')">◀️</button>
+            </div>
+            <button class="ctrl-btn" onclick="changeDir('D')">🔽</button>
+        </div>
+        
+        <button class="main-btn" onclick="startSnake()">ابدأ</button>
+    </div>
+</div>
 <div id="cl" class="section"><div class="box"><h2>الضغط</h2><h1 id="score">0</h1><button class="main-btn" onclick="hit()" style="padding:40px; border-radius:50%; font-size:24px;">اضغط!</button></div></div>
 <div id="mg" class="section">
     <div class="box">
@@ -161,7 +184,7 @@
 <div id="pp" class="section">
     <div class="box">
         <h2>بينج بونج 🏓</h2>
-        <p>النقاط: <span id="pp-sc" style="color:var(--success); font-weight:bold; font-size:20px;">0</span></p>
+        <p>النقاط: <span id="pp-sc" style="color:var(--success); font-weight:bold; font-size:20px;">2</span></p>
         <canvas id="pp-cvs" width="300" height="400"></canvas>
         <button class="main-btn" onclick="initPP()">ابدأ</button>
     </div>
@@ -169,7 +192,7 @@
 <div id="rps" class="section">
     <div class="box">
         <h2>حجر، ورقة، مقص ✌️</h2>
-        <h1 id="rps-res" style="color:var(--primary); margin:20px 0;">اختار عشان تلعب!</h1>
+        <h1 id="rps-res" style="color:var(--primary); margin:20px 0;">الكمبيوتر اختار: ✌️<br>تعادل! 🤝</h1>
         <div>
             <button class="main-btn" style="font-size:30px; padding:15px;" onclick="playRPS('✊')">✊</button>
             <button class="main-btn" style="font-size:30px; padding:15px;" onclick="playRPS('✋')">✋</button>
@@ -185,6 +208,7 @@
         <button class="main-btn" onclick="initCC()">لعبة جديدة</button>
     </div>
 </div>
+
 <script>
     // --- التنقل ---
     function nav(id, btn) {
@@ -218,6 +242,7 @@
     let s_count=0, z_idx=0, z_list=['سبحان الله','الحمد لله','الله أكبر','لا إله إلا الله','لا حول ولا قوة إلا بالله','أستغفر الله']; 
     function hitSibha() { s_count++; document.getElementById('sibha-count').innerText=s_count; if(s_count>0 && s_count%33===0){ z_idx=(z_idx+1)%z_list.length; document.getElementById('sibha-text').innerText=z_list[z_idx]; } } 
     function resetSibha() { s_count=0; z_idx=0; document.getElementById('sibha-count').innerText=s_count; document.getElementById('sibha-text').innerText=z_list[z_idx]; }
+    
     // --- XO ضد الكمبيوتر ---
     let xo_bd = Array(9).fill(null), xo_turn = 'X', xo_active = true;
     function resetXO() { xo_bd.fill(null); xo_turn = 'X'; xo_active = true; document.getElementById('xo-status').innerText = 'دورك (X)'; const b = document.getElementById('xo-board'); b.innerHTML = ''; for(let i=0; i<9; i++) { let c = document.createElement('div'); c.className = 'xo-c'; c.onclick = () => playerMoveXO(i, c); b.appendChild(c); } }
@@ -226,6 +251,7 @@
     function aiMoveXO() { let bestMove = -1; for(let i=0; i<9; i++) { if(!xo_bd[i]) { xo_bd[i] = 'O'; if(checkWinXO(xo_bd) === 'O') bestMove = i; xo_bd[i] = null; } } if(bestMove === -1) { for(let i=0; i<9; i++) { if(!xo_bd[i]) { xo_bd[i] = 'X'; if(checkWinXO(xo_bd) === 'X') bestMove = i; xo_bd[i] = null; } } } if(bestMove === -1) { let empty = []; xo_bd.forEach((v,i) => {if(!v) empty.push(i)}); bestMove = empty[Math.floor(Math.random()*empty.length)]; } if(bestMove !== -1) { xo_bd[bestMove] = 'O'; let el = document.getElementById('xo-board').children[bestMove]; el.innerText = 'O'; el.style.color = 'var(--primary)'; } let w = checkWinXO(xo_bd); if(w) { endGameXO(w); return; } xo_turn = 'X'; document.getElementById('xo-status').innerText = 'دورك (X)'; xo_active = true; }
     function endGameXO(winner) { xo_active = false; if(winner === 'Tie') document.getElementById('xo-status').innerText = 'تعادل!'; else if(winner === 'X') document.getElementById('xo-status').innerText = 'أنت كسبت! 🎉'; else document.getElementById('xo-status').innerText = 'الكمبيوتر كسب! 🤖'; }
     resetXO();
+
     // --- BBTAN ---
     const bCvs=document.getElementById('bbtan'), bCtx=bCvs.getContext('2d'); let balls=[], blocks=[], bLvl=1, bState=0, sX=150, isAim=false, aX, aY;
     function initBB(){ clearInterval(window.bL); bLvl=1; blocks=[]; spawnB(); window.bL=setInterval(upBB,16); }
@@ -241,11 +267,21 @@
         bCtx.fillStyle='#1e90ff'; balls.forEach(b=>{if(b.act&&b.w<=0){bCtx.beginPath();bCtx.arc(b.x,b.y,4,0,7);bCtx.fill();}}); if(bState==0){bCtx.beginPath();bCtx.arc(sX,390,5,0,7);bCtx.fill();}
         if(isAim && bState==0){ bCtx.beginPath(); bCtx.moveTo(sX,390); bCtx.lineTo(aX,aY); bCtx.strokeStyle='rgba(255,255,255,0.5)'; bCtx.setLineDash([5,5]); bCtx.stroke(); bCtx.setLineDash([]); }
     }
-    // --- الثعبان ---
-    let s_sn, s_fd, s_d, s_i, sc=0; function startSnake(){ clearInterval(s_i); s_sn=[{x:10,y:10}]; s_fd={x:5,y:5}; s_d="R"; sc=0; document.getElementById('sn-score').innerText=sc; s_i=setInterval(dS,100); }
+
+    // --- الثعبان (تعديل تحكم الموبايل) ---
+    let s_sn, s_fd, s_d, s_i, sc=0; 
+    function startSnake(){ clearInterval(s_i); s_sn=[{x:10,y:10}]; s_fd={x:5,y:5}; s_d="R"; sc=0; document.getElementById('sn-score').innerText=sc; s_i=setInterval(dS,100); }
+    function changeDir(newD) {
+        if(newD === 'U' && s_d !== 'D') s_d = 'U';
+        if(newD === 'D' && s_d !== 'U') s_d = 'D';
+        if(newD === 'L' && s_d !== 'R') s_d = 'L';
+        if(newD === 'R' && s_d !== 'L') s_d = 'R';
+    }
     function dS(){ const c=document.getElementById('s-canv'), g=c.getContext('2d'); g.fillStyle="#111"; g.fillRect(0,0,300,300); g.fillStyle="#2ed573"; s_sn.forEach(p=>g.fillRect(p.x*15,p.y*15,14,14)); g.fillStyle="#ff4757"; g.fillRect(s_fd.x*15,s_fd.y*15,14,14); let h={x:s_sn[0].x,y:s_sn[0].y}; if(s_d=="R")h.x++; if(s_d=="L")h.x--; if(s_d=="U")h.y--; if(s_d=="D")h.y++; s_sn.unshift(h); if(h.x==s_fd.x&&h.y==s_fd.y){sc+=10; document.getElementById('sn-score').innerText=sc; s_fd={x:Math.floor(Math.random()*20),y:Math.floor(Math.random()*20)};} else s_sn.pop(); if(h.x<0||h.x>=20||h.y<0||h.y>=20 || s_sn.slice(1).some(p=>p.x===h.x && p.y===h.y)){clearInterval(s_i); alert('جيم أوفر! 🎮\nالنقاط: '+sc);} }
-    window.onkeydown=e=>{if(e.key==="ArrowRight"&&s_d!="L")s_d="R"; if(e.key==="ArrowLeft"&&s_d!="R")s_d="L"; if(e.key==="ArrowUp"&&s_d!="D")s_d="U"; if(e.key==="ArrowDown"&&s_d!="U")s_d="D";};
+    window.onkeydown=e=>{if(e.key==="ArrowRight")changeDir('R'); if(e.key==="ArrowLeft")changeDir('L'); if(e.key==="ArrowUp")changeDir('U'); if(e.key==="ArrowDown")changeDir('D');};
+
     let h_s=0; function hit(){h_s++;document.getElementById('score').innerText=h_s;}
+
     // ================= الشطرنج الاحترافي =================
     const pieces={'r':'♜','n':'♞','b':'♝','q':'♛','k':'♚','p':'♟','R':'♖','N':'♘','B':'♗','Q':'♕','K':'♔','P':'♙'};
     const pVals = {'p':10, 'n':30, 'b':30, 'r':50, 'q':90, 'k':9000}; 
@@ -348,7 +384,6 @@
     function computerPlay() {
         let moves = getAllMoves('b');
         if(moves.length === 0) { document.getElementById('chess-status').innerText = 'انتهت اللعبة! 🏁'; return; }
-        
         let bestVal = -Infinity, bestMove = null;
         for(let m of moves) {
             let captured = c_bd[m.t.r][m.t.c];
@@ -362,7 +397,6 @@
             c_bd[bestMove.f.r][bestMove.f.c] = '';
             if(c_bd[bestMove.t.r][bestMove.t.c]==='p' && bestMove.t.r===7) c_bd[bestMove.t.r][bestMove.t.c]='q';
         }
-        
         turn = 'w'; initChess();
         document.getElementById('chess-status').innerText = 'دورك يا بطل (الأبيض) ⚪';
     }
@@ -385,7 +419,7 @@
         return m;
     }
     initChess();
-    // ================= أكواد الألعاب الجديدة =================
+
     // --- لعبة الذاكرة ---
     let mg_e=['🍎','🍎','🍌','🍌','🍉','🍉','🍇','🍇','🍓','🍓','🍒','🍒','🍍','🍍','🥝','🥝'], mg_f=[], mg_m=0;
     function initMG(){
@@ -407,6 +441,7 @@
         });
     }
     initMG();
+
     // --- لعبة بينج بونج ---
     let pp_i, pp_px=110, pp_bx=150, pp_by=50, pp_vx=4, pp_vy=4, pp_s=0;
     const ppCvs=document.getElementById('pp-cvs'), ppCtx=ppCvs.getContext('2d');
@@ -429,6 +464,7 @@
         if(pp_by>374 && pp_by<384 && pp_bx>pp_px && pp_bx<pp_px+80){ pp_vy*=-1; pp_s++; document.getElementById('pp-sc').innerText=pp_s; pp_vx*=1.05; pp_vy*=1.05; }
         if(pp_by>400){ clearInterval(pp_i); alert('جيم أوفر! جبت '+pp_s+' نقطة 💔'); }
     }
+
     // --- حجر ورقة مقص ---
     function playRPS(p){
         let c = ['✊','✋','✌️'][Math.floor(Math.random()*3)];
@@ -439,20 +475,20 @@
         document.getElementById('rps-res').innerHTML = res;
     }
 
-    // ================= كاندي كراش 🍭 =================
+    // ================= كاندي كراش (تعديل تحسين الموبايل) =================
     let cc_grid = [];
     let cc_score = 0;
     let dragStart = null;
     const candyTypes = ['🍒','🍓','🍊','🍋','🍉','🍇'];
-    let cc_canvas;
-    let cc_ctx;
+    let cc_canvas = document.getElementById('cc-canvas');
+    let cc_ctx = cc_canvas.getContext('2d');
 
     function getPos(e) {
         let rect = cc_canvas.getBoundingClientRect();
-        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        let clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        let x = clientX - rect.left;
-        let y = clientY - rect.top;
+        // تعديل مهم للحصول على إحداثيات اللمس بدقة على الموبايل
+        let touch = e.touches && e.touches[0] ? e.touches[0] : (e.changedTouches ? e.changedTouches[0] : e);
+        let x = touch.clientX - rect.left;
+        let y = touch.clientY - rect.top;
         let col = Math.floor(x / 37.5);
         let row = Math.floor(y / 37.5);
         if (row < 0 || row > 7 || col < 0 || col > 7) return null;
@@ -460,13 +496,12 @@
     }
 
     function handleStart(e) {
-        e.preventDefault();
+        if(e.type === 'touchstart') e.preventDefault();
         let pos = getPos(e);
         if (pos) dragStart = pos;
     }
 
     function handleEnd(e) {
-        e.preventDefault();
         if (!dragStart) return;
         let pos = getPos(e);
         if (!pos || (pos.r === dragStart.r && pos.c === dragStart.c)) {
@@ -478,11 +513,8 @@
         if ((dr === 1 && dc === 0) || (dr === 0 && dc === 1)) {
             swap(dragStart.r, dragStart.c, pos.r, pos.c);
             let matches = findMatches();
-            if (matches.length >= 3) {
-                processMatches(matches);
-            } else {
-                swap(pos.r, pos.c, dragStart.r, dragStart.c);
-            }
+            if (matches.length >= 3) { processMatches(matches); } 
+            else { swap(pos.r, pos.c, dragStart.r, dragStart.c); }
         }
         dragStart = null;
         drawCC();
@@ -496,55 +528,38 @@
 
     function findMatches() {
         let matches = new Set();
-        // horizontal
         for (let r = 0; r < 8; r++) {
             for (let c = 0; c < 6; c++) {
                 let t = cc_grid[r][c];
                 if (t !== null && t === cc_grid[r][c+1] && t === cc_grid[r][c+2]) {
-                    matches.add(r + ',' + c);
-                    matches.add(r + ',' + (c+1));
-                    matches.add(r + ',' + (c+2));
+                    matches.add(r + ',' + c); matches.add(r + ',' + (c+1)); matches.add(r + ',' + (c+2));
                     if (c < 5 && t === cc_grid[r][c+3]) matches.add(r + ',' + (c+3));
-                    if (c < 4 && t === cc_grid[r][c+4]) matches.add(r + ',' + (c+4));
                 }
             }
         }
-        // vertical
         for (let c = 0; c < 8; c++) {
             for (let r = 0; r < 6; r++) {
                 let t = cc_grid[r][c];
                 if (t !== null && t === cc_grid[r+1][c] && t === cc_grid[r+2][c]) {
-                    matches.add(r + ',' + c);
-                    matches.add((r+1) + ',' + c);
-                    matches.add((r+2) + ',' + c);
+                    matches.add(r + ',' + c); matches.add((r+1) + ',' + c); matches.add((r+2) + ',' + c);
                     if (r < 5 && t === cc_grid[r+3][c]) matches.add((r+3) + ',' + c);
-                    if (r < 4 && t === cc_grid[r+4][c]) matches.add((r+4) + ',' + c);
                 }
             }
         }
-        return Array.from(matches).map(str => {
-            let [rr, cc] = str.split(',').map(Number);
-            return {r: rr, c: cc};
-        });
+        return Array.from(matches).map(str => { let [rr, cc] = str.split(',').map(Number); return {r: rr, c: cc}; });
     }
 
     function processMatches(mats) {
         if (mats.length === 0) return;
-        let points = mats.length * 10;
-        cc_score += points;
+        cc_score += mats.length * 10;
         document.getElementById('cc-score').innerText = cc_score;
-        mats.forEach(m => {
-            cc_grid[m.r][m.c] = null;
-        });
+        mats.forEach(m => { cc_grid[m.r][m.c] = null; });
         drawCC();
         setTimeout(() => {
             dropCandies();
             let newM = findMatches();
-            if (newM.length > 0) {
-                setTimeout(() => processMatches(newM), 150);
-            } else {
-                drawCC();
-            }
+            if (newM.length > 0) setTimeout(() => processMatches(newM), 150);
+            else drawCC();
         }, 200);
     }
 
@@ -553,71 +568,46 @@
             let writeR = 7;
             for (let r = 7; r >= 0; r--) {
                 if (cc_grid[r][c] !== null) {
-                    if (writeR !== r) {
-                        cc_grid[writeR][c] = cc_grid[r][c];
-                        cc_grid[r][c] = null;
-                    }
+                    if (writeR !== r) { cc_grid[writeR][c] = cc_grid[r][c]; cc_grid[r][c] = null; }
                     writeR--;
                 }
             }
-            for (let r = writeR; r >= 0; r--) {
-                cc_grid[r][c] = Math.floor(Math.random() * candyTypes.length);
-            }
+            for (let r = writeR; r >= 0; r--) { cc_grid[r][c] = Math.floor(Math.random() * candyTypes.length); }
         }
     }
 
     function drawCC() {
-        cc_ctx.fillStyle = '#111';
-        cc_ctx.fillRect(0, 0, 300, 300);
+        cc_ctx.fillStyle = '#111'; cc_ctx.fillRect(0, 0, 300, 300);
         const cellSize = 37.5;
         for (let r = 0; r < 8; r++) {
             for (let c = 0; c < 8; c++) {
                 let typeIdx = cc_grid[r][c];
                 if (typeIdx === null) continue;
-                let emoji = candyTypes[typeIdx];
-                let x = c * cellSize + cellSize / 2;
-                let y = r * cellSize + cellSize / 2;
-                cc_ctx.font = '28px Arial';
-                cc_ctx.textAlign = 'center';
-                cc_ctx.textBaseline = 'middle';
-                cc_ctx.fillText(emoji, x, y);
+                cc_ctx.font = '28px Arial'; cc_ctx.textAlign = 'center'; cc_ctx.textBaseline = 'middle';
+                cc_ctx.fillText(candyTypes[typeIdx], c * cellSize + cellSize/2, r * cellSize + cellSize/2);
             }
-        }
-        // خطوط الشبكة
-        cc_ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-        cc_ctx.lineWidth = 1;
-        for (let i = 0; i <= 8; i++) {
-            cc_ctx.beginPath();
-            cc_ctx.moveTo(i * cellSize, 0);
-            cc_ctx.lineTo(i * cellSize, 300);
-            cc_ctx.stroke();
-            cc_ctx.beginPath();
-            cc_ctx.moveTo(0, i * cellSize);
-            cc_ctx.lineTo(300, i * cellSize);
-            cc_ctx.stroke();
         }
     }
 
     function initCC() {
-        cc_score = 0;
-        document.getElementById('cc-score').innerText = '0';
+        cc_score = 0; document.getElementById('cc-score').innerText = '0';
         cc_grid = Array.from({length: 8}, () => Array.from({length: 8}, () => Math.floor(Math.random() * candyTypes.length)));
         drawCC();
     }
 
-    // إعداد كاندي كراش (مرة واحدة)
-    cc_canvas = document.getElementById('cc-canvas');
-    cc_ctx = cc_canvas.getContext('2d');
     cc_canvas.addEventListener('mousedown', handleStart);
     cc_canvas.addEventListener('touchstart', handleStart, {passive: false});
     cc_canvas.addEventListener('mouseup', handleEnd);
     cc_canvas.addEventListener('touchend', handleEnd, {passive: false});
-    cc_canvas.addEventListener('mouseleave', () => { dragStart = null; });
+    // منع السكرول أثناء لمس اللوحة
+    cc_canvas.addEventListener('touchmove', (e) => e.preventDefault(), {passive: false});
 
     initCC();
 </script>
+
 <footer>
     <p style="font-size: 16px; font-weight: bold; margin-top:30px; color:var(--text-muted);">© 2026 ENG OMAR All Rights Reserved.</p>
     <p style="color:var(--text-muted);">اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى سَيِّدِنَا مُحَمَّدٍ ﷺ</p>
 </footer>
+
 </body></html>
