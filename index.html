@@ -1,7 +1,12 @@
-<html lang="ar" dir="rtl"><head>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أركيد الألعاب الاحترافي 🎮</title>
+    
+    <link rel="manifest" href="manifest.json">
+    
     <style>
         /* المتغيرات للوضع الداكن (الافتراضي) والفاتح */
         :root {
@@ -66,7 +71,7 @@
         .azkar-list h3 { color: var(--primary); margin-top: 0; }
         .azkar-list p { margin-bottom: 15px; border-bottom: 1px dashed var(--border); padding-bottom: 10px; }
     </style>
-</head>
+<style>:is([id*='google_ads_iframe'],[id*='taboola-'],.taboolaHeight,.taboola-placeholder,#top-ad,#credential_picker_container,#credentials-picker-container,#credential_picker_iframe,[id*='google-one-tap-iframe'],#google-one-tap-popup-container,.google-one-tap__module,.google-one-tap-modal-div,#amp_floatingAdDiv,#ez-content-blocker-container) {display:none!important;min-height:0!important;height:0!important;}</style></head>
 <body>
 <nav>
     <button onclick="nav('h', this)" class="active">🏠</button>
@@ -122,7 +127,7 @@
     <div class="box">
         <h2>X-O (ضد الكمبيوتر) 🤖</h2>
         <div id="xo-status" style="font-size:20px; font-weight:bold; color:var(--primary);">دورك (X)</div>
-        <div id="xo-board" class="xo-g"><div class="xo-c" style="color: var(--primary);">O</div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c" style="color: var(--danger);">X</div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div></div>
+        <div id="xo-board" class="xo-g"><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div><div class="xo-c"></div></div>
         <button class="main-btn" onclick="resetXO()">إعادة اللعب</button>
     </div>
 </div>
@@ -610,4 +615,15 @@
     <p style="color:var(--text-muted);">اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى سَيِّدِنَا مُحَمَّدٍ ﷺ</p>
 </footer>
 
-</body></html>
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('Service Worker Registered!', reg))
+                .catch(err => console.log('Service Worker Registration Failed!', err));
+        });
+    }
+</script>
+
+</body>
+</html>
