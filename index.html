@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
+<html lang="ar" dir="rtl"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أركيد الألعاب الاحترافي 🎮</title>
@@ -71,7 +69,7 @@
         .azkar-list h3 { color: var(--primary); margin-top: 0; }
         .azkar-list p { margin-bottom: 15px; border-bottom: 1px dashed var(--border); padding-bottom: 10px; }
     </style>
-<style>:is([id*='google_ads_iframe'],[id*='taboola-'],.taboolaHeight,.taboola-placeholder,#top-ad,#credential_picker_container,#credentials-picker-container,#credential_picker_iframe,[id*='google-one-tap-iframe'],#google-one-tap-popup-container,.google-one-tap__module,.google-one-tap-modal-div,#amp_floatingAdDiv,#ez-content-blocker-container) {display:none!important;min-height:0!important;height:0!important;}</style></head>
+<style>:is([id*='google_ads_iframe'],[id*='taboola-'],.taboolaHeight,.taboola-placeholder,#top-ad,#credential_picker_container,#credentials-picker-container,#credential_picker_iframe,[id*='google-one-tap-iframe'],#google-one-tap-popup-container,.google-one-tap__module,.google-one-tap-modal-div,#amp_floatingAdDiv,#ez-content-blocker-container) {display:none!important;min-height:0!important;height:0!important;}</style><style>:is([id*='google_ads_iframe'],[id*='taboola-'],.taboolaHeight,.taboola-placeholder,#top-ad,#credential_picker_container,#credentials-picker-container,#credential_picker_iframe,[id*='google-one-tap-iframe'],#google-one-tap-popup-container,.google-one-tap__module,.google-one-tap-modal-div,#amp_floatingAdDiv,#ez-content-blocker-container) {display:none!important;min-height:0!important;height:0!important;}</style></head>
 <body>
 <nav>
     <button onclick="nav('h', this)" class="active">🏠</button>
@@ -287,143 +285,184 @@
 
     let h_s=0; function hit(){h_s++;document.getElementById('score').innerText=h_s;}
 
-    // ================= الشطرنج الاحترافي =================
-    const pieces={'r':'♜','n':'♞','b':'♝','q':'♛','k':'♚','p':'♟','R':'♖','N':'♘','B':'♗','Q':'♕','K':'♔','P':'♙'};
-    const pVals = {'p':10, 'n':30, 'b':30, 'r':50, 'q':90, 'k':9000}; 
-    let c_bd=[['r','n','b','q','k','b','n','r'],['p','p','p','p','p','p','p','p'],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['P','P','P','P','P','P','P','P'],['R','N','B','Q','K','B','N','R']];
-    let c_sel=null, c_hints=[], turn='w';
-    function resetChess() { c_bd=[['r','n','b','q','k','b','n','r'],['p','p','p','p','p','p','p','p'],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['P','P','P','P','P','P','P','P'],['R','N','B','Q','K','B','N','R']]; c_sel=null; c_hints=[]; turn='w'; document.getElementById('chess-status').innerText = 'دورك يا بطل (الأبيض) ⚪'; initChess(); }
-    function initChess() {
-        const b=document.getElementById('chess-board'); b.innerHTML='';
-        for(let r=0;r<8;r++){
-            for(let c=0;c<8;c++){
-                let p = c_bd[r][c];
-                let s=document.createElement('div');
-                s.className=`sq ${(r+c)%2==0?'w-sq':'b-sq'}`;
-                if(p) { if(p === p.toUpperCase()) s.classList.add('white-piece'); else s.classList.add('black-piece'); }
-                if(c_sel && c_sel.r===r && c_sel.c===c) s.classList.add('sel');
-                if(c_hints.some(h=>h.r===r && h.c===c)) s.classList.add('hint');
-                s.innerText=pieces[p]||'';
-                s.onclick=()=>clkSq(r,c);
-                b.appendChild(s);
-            }
-        }
-    }
-    function clkSq(r,c) {
-        if(turn !== 'w') return; 
-        if(c_hints.some(h=>h.r===r && h.c===c)) {
-            c_bd[r][c]=c_bd[c_sel.r][c_sel.c]; c_bd[c_sel.r][c_sel.c]='';
-            if(c_bd[r][c]==='P' && r===0) c_bd[r][c]='Q';
-            c_sel=null; c_hints=[]; turn = 'b'; initChess();
-            document.getElementById('chess-status').innerText = 'الكمبيوتر بيفكر... 🤖🧠';
-            setTimeout(computerPlay, 50); 
-            return;
-        }
-        let p = c_bd[r][c];
-        if(p && p === p.toUpperCase()) { c_sel={r,c}; c_hints=getMoves(r,c); initChess(); } 
-        else { c_sel=null; c_hints=[]; initChess(); }
-    }
-    function evaluateBoard() {
-        let score = 0;
-        for(let r=0; r<8; r++) {
-            for(let c=0; c<8; c++) {
-                let p = c_bd[r][c];
-                if(p) {
-                    let val = pVals[p.toLowerCase()];
-                    let posBonus = (3.5 - Math.abs(r - 3.5)) + (3.5 - Math.abs(c - 3.5)); 
-                    let totalVal = val + (posBonus * 0.5);
-                    score += (p === p.toLowerCase()) ? totalVal : -totalVal; 
-                }
-            }
-        }
-        return score;
-    }
-    function getAllMoves(color) {
-        let moves = [];
-        let isWhiteTurn = (color === 'w');
-        for(let r=0; r<8; r++) {
-            for(let c=0; c<8; c++) {
-                let p = c_bd[r][c];
-                if(p) {
-                    let pIsWhite = p === p.toUpperCase();
-                    if(pIsWhite === isWhiteTurn) {
-                        let pMoves = getMoves(r, c);
-                        for(let t of pMoves) moves.push({f: {r,c}, t: {r: t.r, c: t.c}});
-                    }
-                }
-            }
-        }
-        moves.sort((a,b) => (c_bd[b.t.r][b.t.c] ? 1 : 0) - (c_bd[a.t.r][a.t.c] ? 1 : 0));
-        return moves;
-    }
-    function minimax(depth, alpha, beta, isMaximizing) {
-        if(depth === 0) return evaluateBoard();
-        let moves = getAllMoves(isMaximizing ? 'b' : 'w');
-        if(moves.length === 0) return isMaximizing ? -99999 : 99999;
-        if(isMaximizing) {
-            let bestVal = -Infinity;
-            for(let m of moves) {
-                let captured = c_bd[m.t.r][m.t.c];
-                c_bd[m.t.r][m.t.c] = c_bd[m.f.r][m.f.c]; c_bd[m.f.r][m.f.c] = '';
-                let val = minimax(depth - 1, alpha, beta, false);
-                c_bd[m.f.r][m.f.c] = c_bd[m.t.r][m.t.c]; c_bd[m.t.r][m.t.c] = captured;
-                bestVal = Math.max(bestVal, val);
-                alpha = Math.max(alpha, bestVal);
-                if(beta <= alpha) break;
-            }
-            return bestVal;
-        } else {
-            let bestVal = Infinity;
-            for(let m of moves) {
-                let captured = c_bd[m.t.r][m.t.c];
-                c_bd[m.t.r][m.t.c] = c_bd[m.f.r][m.f.c]; c_bd[m.f.r][m.f.c] = '';
-                let val = minimax(depth - 1, alpha, beta, true);
-                c_bd[m.f.r][m.f.c] = c_bd[m.t.r][m.t.c]; c_bd[m.t.r][m.t.c] = captured;
-                bestVal = Math.min(bestVal, val);
-                beta = Math.min(beta, bestVal);
-                if(beta <= alpha) break;
-            }
-            return bestVal;
-        }
-    }
-    function computerPlay() {
-        let moves = getAllMoves('b');
-        if(moves.length === 0) { document.getElementById('chess-status').innerText = 'انتهت اللعبة! 🏁'; return; }
-        let bestVal = -Infinity, bestMove = null;
-        for(let m of moves) {
-            let captured = c_bd[m.t.r][m.t.c];
-            c_bd[m.t.r][m.t.c] = c_bd[m.f.r][m.f.c]; c_bd[m.f.r][m.f.c] = '';
-            let val = minimax(2, -Infinity, Infinity, false); 
-            c_bd[m.f.r][m.f.c] = c_bd[m.t.r][m.t.c]; c_bd[m.t.r][m.t.c] = captured;
-            if(val > bestVal) { bestVal = val; bestMove = m; }
-        }
-        if(bestMove) {
-            c_bd[bestMove.t.r][bestMove.t.c] = c_bd[bestMove.f.r][bestMove.f.c];
-            c_bd[bestMove.f.r][bestMove.f.c] = '';
-            if(c_bd[bestMove.t.r][bestMove.t.c]==='p' && bestMove.t.r===7) c_bd[bestMove.t.r][bestMove.t.c]='q';
-        }
-        turn = 'w'; initChess();
-        document.getElementById('chess-status').innerText = 'دورك يا بطل (الأبيض) ⚪';
-    }
-    function getMoves(r,c) {
-        let m=[], p=c_bd[r][c]; if(!p) return m;
-        let isWhite = p === p.toUpperCase(); p = p.toLowerCase();
-        const isEnemy=(row,col)=>{ if(row<0||row>7||col<0||col>7||c_bd[row][col]==='') return false; return isWhite !== (c_bd[row][col]===c_bd[row][col].toUpperCase()); };
-        const isEmpty=(row,col)=>row>=0&&row<=7&&col>=0&&col<=7&&c_bd[row][col]==='';
-        if(p==='p') { 
-            let dir=isWhite?-1:1;
-            if(isEmpty(r+dir,c)) m.push({r:r+dir, c});
-            if((isWhite&&r===6||!isWhite&&r===1)&&isEmpty(r+dir,c)&&isEmpty(r+2*dir,c)) m.push({r:r+2*dir, c});
-            if(isEnemy(r+dir,c-1)) m.push({r:r+dir, c:c-1});
-            if(isEnemy(r+dir,c+1)) m.push({r:r+dir, c:c+1});
-        }
-        if(p==='r'||p==='q') { [[0,1],[0,-1],[1,0],[-1,0]].forEach(d=>{ for(let i=1;i<8;i++){ let nr=r+d[0]*i, nc=c+d[1]*i; if(isEmpty(nr,nc)){ m.push({r:nr,c:nc}); } else { if(isEnemy(nr,nc)) m.push({r:nr,c:nc}); break; } } }); }
-        if(p==='b'||p==='q') { [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(d=>{ for(let i=1;i<8;i++){ let nr=r+d[0]*i, nc=c+d[1]*i; if(isEmpty(nr,nc)){ m.push({r:nr,c:nc}); } else { if(isEnemy(nr,nc)) m.push({r:nr,c:nc}); break; } } }); }
-        if(p==='n') { [[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]].forEach(d=>{ let nr=r+d[0], nc=c+d[1]; if(isEmpty(nr,nc)||isEnemy(nr,nc)) m.push({r:nr,c:nc}); }); }
-        if(p==='k') { [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(d=>{ let nr=r+d[0], nc=c+d[1]; if(isEmpty(nr,nc)||isEnemy(nr,nc)) m.push({r:nr,c:nc}); }); }
-        return m;
-    }
-    initChess();
+    // ================= الشطرنج الاحترافي المطور 2026 =================
+const pieces={'r':'♜','n':'♞','b':'♝','q':'♛','k':'♚','p':'♟','R':'♖','N':'♘','B':'♗','Q':'♕','K':'♔','P':'♙'};
+
+// مصفوفات المواقع لتحسين ذكاء القطع (PST)
+const pst = {
+    p: [ [0,0,0,0,0,0,0,0],[5,5,5,5,5,5,5,5],[1,1,2,3,3,2,1,1],[0.5,0.5,1,2.5,2.5,1,0.5,0.5],[0,0,0,2,2,0,0,0],[0.5,-0.5,-1,0,0,-1,-0.5,0.5],[0.5,1,1,-2,-2,1,1,0.5],[0,0,0,0,0,0,0,0] ],
+    n: [ [-5,-4,-3,-3,-3,-3,-4,-5],[-4,-2,0,0,0,0,-2,-4],[-3,0,1,1.5,1.5,1,0,-3],[-3,0.5,1.5,2,2,1.5,0.5,-3],[-3,0,1.5,2,2,1.5,0,-3],[-3,0.5,1,1.5,1.5,1,0.5,-3],[-4,-2,0,0.5,0.5,0,-2,-4],[-5,-4,-3,-3,-3,-3,-4,-5] ],
+    b: [ [-2,-1,-1,-1,-1,-1,-1,-2],[-1,0,0,0,0,0,0,-1],[-1,0,0.5,1,1,0.5,0,-1],[-1,0.5,0.5,1,1,0.5,0.5,-1],[-1,0,1,1,1,1,0,-1],[-1,1,1,1,1,1,1,-1],[-1,0.5,0,0,0,0,0.5,-1],[-2,-1,-1,-1,-1,-1,-1,-2] ],
+    r: [ [0,0,0,0,0,0,0,0],[0.5,1,1,1,1,1,1,0.5],[-0.5,0,0,0,0,0,0,-0.5],[-0.5,0,0,0,0,0,0,-0.5],[-0.5,0,0,0,0,0,0,-0.5],[-0.5,0,0,0,0,0,0,-0.5],[-0.5,0,0,0,0,0,0,-0.5],[0,0,0,0.5,0.5,0,0,0] ],
+    q: [ [-2,-1,-1,-0.5,-0.5,-1,-1,-2],[-1,0,0,0,0,0,0,-1],[-1,0,0.5,0.5,0.5,0.5,0,-1],[-0.5,0,0.5,0.5,0.5,0.5,0,-0.5],[0,0,0.5,0.5,0.5,0.5,0,-0.5],[-1,0.5,0.5,0.5,0.5,0.5,0,-1],[-1,0,0.5,0,0,0,0,-1],[-2,-1,-1,-0.5,-0.5,-1,-1,-2] ],
+    k: [ [-3,-4,-4,-5,-5,-4,-4,-3],[-3,-4,-4,-5,-5,-4,-4,-3],[-3,-4,-4,-5,-5,-4,-4,-3],[-3,-4,-4,-5,-5,-4,-4,-3],[-2,-3,-3,-4,-4,-3,-3,-2],[-1,-2,-2,-2,-2,-2,-2,-1],[2,2,0,0,0,0,2,2],[2,3,1,0,0,1,3,2] ]
+};
+
+const pVals = {'p':100, 'n':320, 'b':330, 'r':500, 'q':900, 'k':20000}; 
+let c_bd=[['r','n','b','q','k','b','n','r'],['p','p','p','p','p','p','p','p'],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['P','P','P','P','P','P','P','P'],['R','N','B','Q','K','B','N','R']];
+let c_sel=null, c_hints=[], turn='w', lastMove=null;
+
+function resetChess() { 
+    c_bd=[['r','n','b','q','k','b','n','r'],['p','p','p','p','p','p','p','p'],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['','','','','','','',''],['P','P','P','P','P','P','P','P'],['R','N','B','Q','K','B','N','R']]; 
+    c_sel=null; c_hints=[]; turn='w'; lastMove=null;
+    document.getElementById('chess-status').innerText = 'دورك يا بطل (الأبيض) ⚪'; initChess(); 
+}
+
+function initChess() {
+    const b=document.getElementById('chess-board'); b.innerHTML='';
+    for(let r=0;r<8;r++){
+        for(let c=0;c<8;c++){
+            let p = c_bd[r][c];
+            let s=document.createElement('div');
+            s.className=`sq ${(r+c)%2==0?'w-sq':'b-sq'}`;
+            if(p) { if(p === p.toUpperCase()) s.classList.add('white-piece'); else s.classList.add('black-piece'); }
+            if(c_sel && c_sel.r===r && c_sel.c===c) s.classList.add('sel');
+            if(lastMove && ( (lastMove.f.r===r && lastMove.f.c===c) || (lastMove.t.r===r && lastMove.t.c===c) )) s.style.backgroundColor = 'rgba(255, 255, 0, 0.3)';
+            if(c_hints.some(h=>h.r===r && h.c===c)) s.classList.add('hint');
+            s.innerText=pieces[p]||'';
+            s.onclick=()=>clkSq(r,c);
+            b.appendChild(s);
+        }
+    }
+}
+
+function clkSq(r,c) {
+    if(turn !== 'w') return; 
+    if(c_hints.some(h=>h.r===r && h.c===c)) {
+        makeMove({f: c_sel, t: {r,c}});
+        turn = 'b'; initChess();
+        document.getElementById('chess-status').innerText = 'الكمبيوتر بيفكر... 🤖🧠';
+        setTimeout(computerPlay, 100); 
+        return;
+    }
+    let p = c_bd[r][c];
+    if(p && p === p.toUpperCase()) { c_sel={r,c}; c_hints=getMoves(r,c); initChess(); } 
+    else { c_sel=null; c_hints=[]; initChess(); }
+}
+
+function makeMove(m) {
+    let p = c_bd[m.f.r][m.f.c];
+    c_bd[m.t.r][m.t.c] = p;
+    c_bd[m.f.r][m.f.c] = '';
+    // ترقية العسكري التلقائية لوزير
+    if(p.toLowerCase()==='p' && (m.t.r===0 || m.t.r===7)) c_bd[m.t.r][m.t.c] = (p === 'P' ? 'Q' : 'q');
+    lastMove = m;
+    c_sel=null; c_hints=[];
+}
+
+function evaluateBoard(board) {
+    let totalScore = 0;
+    for(let r=0; r<8; r++) {
+        for(let c=0; c<8; c++) {
+            let p = board[r][c];
+            if(p) {
+                let isWhite = p === p.toUpperCase();
+                let pType = p.toLowerCase();
+                let val = pVals[pType] + pst[pType][isWhite ? 7-r : r][isWhite ? c : 7-c];
+                totalScore += isWhite ? -val : val; // AI هو الأسود (موجب)
+            }
+        }
+    }
+    return totalScore;
+}
+
+function getAllMoves(board, color) {
+    let moves = [];
+    let isWhite = (color === 'w');
+    for(let r=0; r<8; r++) {
+        for(let c=0; c<8; c++) {
+            let p = board[r][c];
+            if(p && (p === p.toUpperCase()) === isWhite) {
+                let pMoves = getMoves(r, c, board);
+                pMoves.forEach(m => moves.push({f: {r,c}, t: m, score: 0}));
+            }
+        }
+    }
+    // ترتيب النقلات (Heuristic: الأكل أولاً)
+    moves.forEach(m => { if(board[m.t.r][m.t.c]) m.score = 10 * pVals[board[m.t.r][m.t.c].toLowerCase()] - pVals[board[m.f.r][m.f.c].toLowerCase()]; });
+    return moves.sort((a,b) => b.score - a.score);
+}
+
+function minimax(depth, alpha, beta, isMax) {
+    if(depth === 0) return evaluateBoard(c_bd);
+    let moves = getAllMoves(c_bd, isMax ? 'b' : 'w');
+    if(moves.length === 0) return isMax ? -100000 : 100000;
+
+    if(isMax) {
+        let best = -Infinity;
+        for(let m of moves) {
+            let cap = c_bd[m.t.r][m.t.c];
+            c_bd[m.t.r][m.t.c] = c_bd[m.f.r][m.f.c]; c_bd[m.f.r][m.f.c] = '';
+            let score = minimax(depth - 1, alpha, beta, false);
+            c_bd[m.f.r][m.f.c] = c_bd[m.t.r][m.t.c]; c_bd[m.t.r][m.t.c] = cap;
+            best = Math.max(best, score);
+            alpha = Math.max(alpha, best);
+            if(beta <= alpha) break;
+        }
+        return best;
+    } else {
+        let best = Infinity;
+        for(let m of moves) {
+            let cap = c_bd[m.t.r][m.t.c];
+            c_bd[m.t.r][m.t.c] = c_bd[m.f.r][m.f.c]; c_bd[m.f.r][m.f.c] = '';
+            let score = minimax(depth - 1, alpha, beta, true);
+            c_bd[m.f.r][m.f.c] = c_bd[m.t.r][m.t.c]; c_bd[m.t.r][m.t.c] = cap;
+            best = Math.min(best, score);
+            beta = Math.min(beta, best);
+            if(beta <= alpha) break;
+        }
+        return best;
+    }
+}
+
+function computerPlay() {
+    let moves = getAllMoves(c_bd, 'b');
+    if(moves.length === 0) { document.getElementById('chess-status').innerText = 'انتهى الجيم! 🏁'; return; }
+    
+    let bestMove = null;
+    let bestValue = -Infinity;
+
+    for(let m of moves) {
+        let cap = c_bd[m.t.r][m.t.c];
+        c_bd[m.t.r][m.t.c] = c_bd[m.f.r][m.f.c]; c_bd[m.f.r][m.f.c] = '';
+        let boardValue = minimax(3, -Infinity, Infinity, false); // عمق 3 للذكاء
+        c_bd[m.f.r][m.f.c] = c_bd[m.t.r][m.t.c]; c_bd[m.t.r][m.t.c] = cap;
+        if(boardValue > bestValue) {
+            bestValue = boardValue;
+            bestMove = m;
+        }
+    }
+    
+    if(bestMove) makeMove(bestMove);
+    turn = 'w'; initChess();
+    document.getElementById('chess-status').innerText = 'دورك يا بطل (الأبيض) ⚪';
+}
+
+function getMoves(r,c, board = c_bd) {
+    let m=[], p=board[r][c]; if(!p) return m;
+    let isWhite = p === p.toUpperCase(); 
+    let type = p.toLowerCase();
+    
+    const isEnemy=(nr,nc)=>{ 
+        if(nr<0||nr>7||nc<0||nc>7||board[nr][nc]==='') return false; 
+        return isWhite !== (board[nr][nc]===board[nr][nc].toUpperCase()); 
+    };
+    const isEmpty=(nr,nc)=>nr>=0&&nr<=7&&nc>=0&&nc<=7&&board[nr][nc]==='';
+
+    if(type==='p') { 
+        let dir=isWhite?-1:1;
+        if(isEmpty(r+dir,c)) m.push({r:r+dir, c});
+        if((isWhite&&r===6||!isWhite&&r===1)&&isEmpty(r+dir,c)&&isEmpty(r+2*dir,c)) m.push({r:r+2*dir, c});
+        if(isEnemy(r+dir,c-1)) m.push({r:r+dir, c:c-1});
+        if(isEnemy(r+dir,c+1)) m.push({r:r+dir, c:c+1});
+    }
+    else if(type==='r'||type==='q') { [[0,1],[0,-1],[1,0],[-1,0]].forEach(d=>{ for(let i=1;i<8;i++){ let nr=r+d[0]*i, nc=c+d[1]*i; if(isEmpty(nr,nc)){ m.push({r:nr,c:nc}); } else { if(isEnemy(nr,nc)) m.push({r:nr,c:nc}); break; } } }); }
+    if(type==='b'||type==='q') { [[1,1],[1,-1],[-1,1],[-1,-1]].forEach(d=>{ for(let i=1;i<8;i++){ let nr=r+d[0]*i, nc=c+d[1]*i; if(isEmpty(nr,nc)){ m.push({r:nr,c:nc}); } else { if(isEnemy(nr,nc)) m.push({r:nr,c:nc}); break; } } }); }
+    if(type==='n') { [[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]].forEach(d=>{ let nr=r+d[0], nc=c+d[1]; if(isEmpty(nr,nc)||isEnemy(nr,nc)) m.push({r:nr,c:nc}); }); }
+    if(type==='k') { [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]].forEach(d=>{ let nr=r+d[0], nc=c+d[1]; if(isEmpty(nr,nc)||isEnemy(nr,nc)) m.push({r:nr,c:nc}); }); }
+    return m;
+}
+initChess();
 
     // --- لعبة الذاكرة ---
     let mg_e=['🍎','🍎','🍌','🍌','🍉','🍉','🍇','🍇','🍓','🍓','🍒','🍒','🍍','🍍','🥝','🥝'], mg_f=[], mg_m=0;
@@ -625,5 +664,6 @@
     }
 </script>
 
-</body>
-</html>
+
+
+</body></html>
