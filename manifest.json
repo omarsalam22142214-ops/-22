@@ -1,11 +1,11 @@
 {
-  "name": "  OMAR OFFLINE TV",
-  "short_name": "OMR OFFLINE TV",
-  "description": "تطبيق لمشاهدة القنوات والمباريات الحصرية",
+  "name": "أركيد الألعاب الاحترافي",
+  "short_name": "أركيد",
+  "description": "مجموعة ألعاب أوفلاين ممتعة بدون إنترنت",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#1a1a1a",
-  "theme_color": "#4caac9",
+  "background_color": "#0f141e",
+  "theme_color": "#1e90ff",
   "icons": [
     {
       "src": "icon-192.png",
